@@ -1,5 +1,8 @@
 package project.game.board;
 
+/*
+ * tu chyba wszystko git
+ */
 public class Field {
     private Pawn pawn;
     private int x;
@@ -24,6 +27,7 @@ public class Field {
 		this.x=x;
 		this.y=y;
 	}
+	
 	public int getX() {
 		return x;
 	}
