@@ -7,11 +7,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 /*
- * pierwszy ktory wbije do serwera otrzyma to miano oraz przywilej do wybrania liczby graczy  i botow
- * brakuje parsera kmend i pomyslu na ich wysylanie
- * w zasadzie wystarczy tylko dokonczyc metode run
+ * first client connected to the server
+ * he has the option of choosing 
+ * all number of players and
+ * number of bots
  */
-
 public class Host extends Thread{
 	
 	Socket socket;
@@ -35,17 +35,23 @@ public class Host extends Thread{
 	}
 	
 	/*
-	 * get a message with number of players an bot then start a game
+	 * get a message with number of players an bot then init a game
 	 */
 	public void run() {
 		
-		/*
-		 * parser,parser, dajcie parsera....
-		 */
-		//playerNo = 
-		//botNo = 
+		try {
+			playersNo = Integer.parseInt(input.readLine());
+			botsNo = Integer.parseInt(input.readLine());
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			System.out.println("host args parse error");
+			System.exit(-1);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
 		
 		server.initGame(this, playersNo, botsNo);
-		
+		System.out.println("Game initialized, waiting for players");
 	}
 }

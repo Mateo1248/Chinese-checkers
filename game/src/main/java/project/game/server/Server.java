@@ -54,9 +54,8 @@ public class Server {
     }
     
     public void initGame(Host host, int playersNo, int botsNo) {
-    	/*
-    	 * wywolujemy gonstruktor gejma
-    	 */
+    	game = new Game(serversocket, host, playersNo, botsNo);
+    	game.run();
     }
     
     
