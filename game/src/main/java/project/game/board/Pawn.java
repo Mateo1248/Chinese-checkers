@@ -2,6 +2,9 @@ package project.game.board;
 
 import project.game.player.Player;
 
+/*
+ * tutaj nie wiadomo co z tym plajerem, ale w koncu jakis wlasciciel musi byc
+ */
 public class Pawn {
 
 	private int x, y;
