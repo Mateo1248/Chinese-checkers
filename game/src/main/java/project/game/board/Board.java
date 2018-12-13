@@ -2,54 +2,29 @@ package project.game.board;
 
 import java.util.ArrayList;
 
-public class Board {
-	
-	    static private final int[][] STAR_REPRESENTATION = {
-	            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+public  class Board {
+	public int[][] STAR_REPRESENTATION;
+	public int HEIGHT;
+	public int WIDTH;
+	private Field board[][];
+	public Field selected;
+	private ArrayList<Field> highlighted;
 
-	            {-1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1},
-
-	            {-1, -1, -1, -1, -1, 1, 1, -1, -1, -1, -1, -1, -1},
-
-	            {-1, -1, -1, -1, -1, 1, 1, 1, -1, -1, -1, -1, -1},
-
-	            {-1, -1, -1, -1, 1, 1, 1, 1, -1, -1, -1, -1, -1},
-
-	            {6, 6, 6, 6,  0,  0,  0,  0,  0, 2, 2, 2, 2},
-
-	            {6, 6, 6,  0,  0,  0,  0,  0,  0, 2, 2, 2, -1},
-
-	            {-1, 6, 6,  0,  0,  0,  0,  0,  0,  0, 2, 2, -1},
-
-	            {-1, 6,  0,  0,  0,  0,  0,  0,  0,  0, 2, -1, -1},
-
-	            {-1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1},
-
-	            {-1, 5,  0,  0,  0,  0,  0,  0,  0,  0, 3, -1, -1},
-
-	            {-1, 5, 5,  0,  0,  0,  0,  0,  0,  0, 3, 3, -1},
-
-	            {5, 5, 5,  0,  0,  0,  0,  0,  0, 3, 3, 3, -1},
-
-	            {5, 5, 5, 5,  0,  0,  0,  0,  0, 3, 3, 3, 3},
-
-	            {-1, -1, -1, -1, 4, 4, 4, 4, -1, -1, -1, -1, -1},
-
-	            {-1, -1, -1, -1, -1, 4, 4, 4, -1, -1, -1, -1, -1},
-
-	            {-1, -1, -1, -1, -1, 4, 4, -1, -1, -1, -1, -1, -1},
-
-	            {-1, -1, -1, -1, -1, -1, 4, -1, -1, -1, -1, -1, -1},
-
-	            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
-	    };
-
-	    public final int HEIGHT = STAR_REPRESENTATION.length, WIDTH = STAR_REPRESENTATION[0].length;
-	    private Field board[][];
-	    public Field selected;
-	    private ArrayList<Field> highlighted;
-
-	    public Board() {
+	    public static Board initialize(int num){
+	    	switch(num){
+	    	case 2:
+	    			return new Boardfor2();
+	    	case 3:
+	    		return new Boardfor3();
+	    			
+	    	case 4:
+	    		return new Boardfor4();
+	    	case 6: 
+	    		return new Boardfor6();
+	    	}
+	    	return null;
+	    }
+	    public void draw() {
 	        board = new Field[HEIGHT][WIDTH];
 	        highlighted = new ArrayList<>();
 	        for (int y = 0; y < board.length; ++y) {

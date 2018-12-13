@@ -12,6 +12,7 @@ package project.game.board;
             this.xCord = x;
             this.fieldColor = FieldsColor.values()[i];
             this.setStroke(Paint.valueOf("BLACK"));
+            this.setStrokeWidth(1);
         }
 
         public Field(FieldsColor color, int y, int x) {

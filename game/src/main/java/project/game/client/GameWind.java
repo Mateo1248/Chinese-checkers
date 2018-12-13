@@ -8,14 +8,15 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import project.game.board.Board;
+import project.game.board.Boardfor2;
 import project.game.board.Field;
 import project.game.board.FieldsColor;
 
 
 public class GameWind {
-	GameWind(){
+	GameWind(int num,int numb){
 	final int DISPLAY_WIDTH = 500, DISPLAY_HEIGHT = 500;
-    final double RADIUS = 10.0;
+    final double RADIUS = 15.0;
 
     Stage game= new Stage();
     
@@ -27,7 +28,7 @@ public class GameWind {
     img.setImage(image);
     Scene s = new Scene(root, DISPLAY_WIDTH, DISPLAY_HEIGHT);
     root.getChildren().add(img);
-    Board board = new Board();
+    Board board = Board.initialize(num);
 
     s.addEventFilter(MouseEvent.MOUSE_CLICKED, evt -> {
        /* try {

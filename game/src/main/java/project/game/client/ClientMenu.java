@@ -10,8 +10,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class ClientMenu extends Application {
-    private int numb;
-    private int num;
 
     // Player player=new PLayer();
     public static void main(String[] args){
@@ -38,15 +36,14 @@ public class ClientMenu extends Application {
         root.getChildren().add(but);
         b.setOnAction(event -> {
             PlayersNumWindow pn = new PlayersNumWindow();
-            this.num=pn.getnumP();
-            this.numb=pn.getnumB();
-            cos.setText(num+" "+numb);
+          
             // new WaitWindow();
             primaryStage.close();
-            new GameWind();
+            new GameWind(pn.getnumP(),pn.getnumB());
         });
         primaryStage.setScene(new Scene(root,200,200));
         primaryStage.show();
-        //else {Waitingwindow();
+        //else {            new GameWind();
+
     }
 }
