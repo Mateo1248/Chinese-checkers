@@ -1,45 +1,49 @@
 package project.game.board;
 
-/*
- * tu chyba wszystko git
- */
-public class Field {
-    private Pawn pawn;
-    private int x;
-    private int y;
 
-    public Field(int x, int y) {
-    	this.x=x;
-    	this.y=y;
-    	this.pawn = null;
+    import javafx.scene.paint.Paint;
+    import javafx.scene.shape.Circle;
+
+    public class Field extends Circle {
+        private FieldsColor fieldColor;
+        private int yCord, xCord;
+        public Field(int i, int y, int x) {
+        	this.yCord = y;
+            this.xCord = x;
+            this.fieldColor = FieldsColor.values()[i];
+            this.setStroke(Paint.valueOf("BLACK"));
+        }
+
+        public Field(FieldsColor color, int y, int x) {
+            this.fieldColor = color;
+            this.yCord = y;
+            this.xCord = x;
+            this.setStroke(Paint.valueOf("BLACK"));
+        }
+
+        static Field getNullField() {
+            Field nullField = new Field(0, -1, -1);
+            nullField.setStroke(Paint.valueOf("TRANSPARENT"));
+            return nullField;
+        }
+
+        public void setColor(FieldsColor color) {
+            this.fieldColor = color;
+        }
+
+        public String getColor() throws NullPointerException {
+            return this.fieldColor.getColor();
+        }
+
+        public FieldsColor getFieldColor() {
+            return this.fieldColor;
+        }
+
+        public int getYCord() {
+            return yCord;
+        }
+
+        public int getXCord() {
+            return xCord;
+        }
     }
-
-	public Pawn getPawn() {
-		return pawn;
-	}
-
-	public void setPawn(Pawn pawn) {
-		this.pawn = pawn;
-		pawn.setLocation(x, y);
-	}
-
-	public void setLocation(int x, int y) {
-		this.x=x;
-		this.y=y;
-	}
-	
-	public int getX() {
-		return x;
-	}
-
-	public int getY() {
-		return y;
-	}
-	
-	public boolean isPawn() {
-		if(pawn != null)
-			return true;
-		else
-			return false;
-	}
-}

@@ -43,6 +43,7 @@ public class ClientMenu extends Application {
             cos.setText(num+" "+numb);
             // new WaitWindow();
             primaryStage.close();
+            new GameWind();
         });
         primaryStage.setScene(new Scene(root,200,200));
         primaryStage.show();
