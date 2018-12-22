@@ -8,42 +8,61 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import project.game.server.Communicator;
 
 public class ClientMenu extends Application {
 
-    // Player player=new PLayer();
+	/*
+	 * za pomoca obiektu klienta bedziemy komunikowac sie z serverem
+	 */
+	Client client;
+	
+	
     public static void main(String[] args){
         launch(args);
     }
 
+    
     public void start(Stage primaryStage) {
     	
-    	/* tu powinno być coś co odróżnia clienta od hosta 
-    	 *  wrzucić ifa a wspólne dlaklientaa jest tylko i wyłącznie okienko waitfor...
+    	client = new Client();
+    	
+    	/*
+    	 * jesli pierwszy klient to pokaz mu okienko i pobierz informacje
     	 */
-// if client= host myk
-        primaryStage.setTitle("Chinese-Checkers Client");
-        Group root = new Group();
-        //if(player.isAdmin())
-        VBox but=new VBox();
-
-        Button b = new Button("choose players number");
-        Label b3 = new Label("Waiting for Game");
-        TextArea cos= new TextArea("");
-        //if (signal from server GAMESTARTED)
-        // GameWindow gameWindow=GameWindow();
-        but.getChildren().addAll(b,b3,cos);
-        root.getChildren().add(but);
-        b.setOnAction(event -> {
-            PlayersNumWindow pn = new PlayersNumWindow();
-          
-            // new WaitWindow();
-            primaryStage.close();
-            new GameWind(pn.getnumP(),pn.getnumB());
-        });
-        primaryStage.setScene(new Scene(root,200,200));
-        primaryStage.show();
-        //else {            new GameWind();
-
+    	if(client.isHost()) {
+	        primaryStage.setTitle("Chinese-Checkers Client");
+	        Group root = new Group();
+	        VBox but=new VBox();
+	        
+	        
+	        
+		    Button b = new Button("choose players number");
+		    b.setOnAction(event -> {
+		        PlayersNumWindow pn = new PlayersNumWindow();
+		          
+		        // new WaitWindow();
+		        primaryStage.close();
+		        client.write(Integer.toString(pn.getnumP()));
+		        client.write(Integer.toString(pn.getnumB()));
+		        new GameWind(pn.getnumP(),pn.getnumB());
+		    });
+		    but.getChildren().add(b);
+		        
+		    
+	        root.getChildren().add(but);
+	      
+	        
+	        primaryStage.setScene(new Scene(root,200,200));
+	        primaryStage.show();
+    	}
+    	/*
+    	 * jesli nie pobierz info od servera wlacz okno gry i czekaj na jej rozpoczecie
+    	 */
+    	else {
+    		new GameWind(Integer.parseInt(client.read()), Integer.parseInt(client.read()));
+    	}
     }
+    
+    
 }
