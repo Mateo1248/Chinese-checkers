@@ -13,7 +13,7 @@ public class Player {
 	private BufferedReader in;
 	private PrintWriter out;
 	
-	Player(Socket socket, int clientno) {
+	Player(Socket socket, int id) {
 		this.socket = socket;
 		this.id = id;
 		
