@@ -2,6 +2,7 @@ package project.game.board;
 
 public class Boardfor2 extends Board {
 		public Boardfor2(){
+			
 			 final int[][] STAR_FOR2=
 				{
 	            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},

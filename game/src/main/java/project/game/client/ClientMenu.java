@@ -48,11 +48,7 @@ public class ClientMenu extends Application {
 		        new GameWind(pn.getnumP(),pn.getnumB());
 		    });
 		    but.getChildren().add(b);
-		        
-		    
 	        root.getChildren().add(but);
-	      
-	        
 	        primaryStage.setScene(new Scene(root,200,200));
 	        primaryStage.show();
     	}
