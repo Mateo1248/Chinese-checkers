@@ -2,6 +2,12 @@ package project.game.board;
 
 import java.util.ArrayList;
 
+import javafx.scene.paint.Paint;
+import project.game.board.Field;
+import project.game.board.FieldsColor;
+
+
+
 public  class Board {
 	public int[][] STAR_REPRESENTATION;
 	public int HEIGHT;
@@ -43,20 +49,138 @@ public  class Board {
 	        return board[y][x];
 	    }
 
-	    public boolean isLegal(Field field) {
+	    public boolean isPossible(Field field) {
 	        return highlighted.contains(field);
 	    }
-		public void flushHighlighted() {
-			// TODO Auto-generated method stub
-			
+
+		public void changeFieldsColor(Field field, FieldsColor fieldColor) {
+			  if (field.getXCord() != -1) {
+		            this.getNode(field.getYCord(), field.getXCord()).setColor(fieldColor);
+		            this.getNode(field.getYCord(), field.getXCord()).setFill(Paint.valueOf(fieldColor.getColor()));
+		        }
 		}
-		public void highlightLegalMoves(Field selected2) {
-			// TODO Auto-generated method stub
-			
+		
+		public void flushPossible() {
+			for (Field field : highlighted) {
+	            field.setStroke(Paint.valueOf("BLACK"));
+	            field.setFill(Paint.valueOf(field.getColor()));
+	        }
+	        highlighted.clear();			
 		}
-		public void changeFieldColor(Field intersectedNode, FieldsColor fieldColor) {
-			// TODO Auto-generated method stub
-			
+		public void showPossbileMoves(Field selected2) {
+	        if (!selected.getColor().equals("WHITE")) {
+	            int ySelected = selected.getYCord();
+	            int xSelected = selected.getXCord();
+
+	            if (ySelected % 2 == 1) {
+	                highlightField(this.getNode(ySelected - 1, xSelected - 1));
+	                highlightField(this.getNode(ySelected + 1, xSelected - 1));
+	            } else {
+	                highlightField(this.getNode(ySelected - 1, xSelected + 1));
+	                highlightField(this.getNode(ySelected + 1, xSelected + 1));
+	            }
+	            highlightField(this.getNode(ySelected - 1, xSelected));
+	            highlightField(this.getNode(ySelected + 1, xSelected));
+	            highlightField(this.getNode(ySelected, xSelected - 1));
+	            highlightField(this.getNode(ySelected, xSelected + 1));
+		        findAHop(selected);			
+
+	        }
+
+		}
+		private void findAHop(Field field) {
+
+	        int y = field.getYCord(), x = field.getXCord();
+	        int parity;
+	        if (y % 2 == 1) {
+	            parity = -1;
+	        }
+	        else {
+	            parity = 1;
+	        }
+	        // DLA PARZYSTYCH I NIE PARZYSTYCH WIERSZY SKOKI DZIAŁAJĄ INACZEJ 
+	  /*    nieparzyste o
+	   * 	 x x       x x 
+	        x o x ==   x o x   
+	         x x       x x	
+	         parzyste o
+	         x x         x x
+	        x o x ==   x o x
+	         x x         x x
+	         */
+	        // parzyste o    nieparzyste      x
+  	        //           x						o
+	        
+	        try {
+	            if (!this.getNode(y + 1*parity, x + 1*parity).getColor().equals("WHITE")) {
+	                if (this.getNode(y + 2*parity, x + 1*parity).getColor().equals("WHITE") && !highlighted.contains(this.getNode(y + 2*parity, x + 1*parity))) {
+	                    highlightField(this.getNode(y + 2*parity, x + 1*parity));
+	                    findAHop(this.getNode(y + 2*parity, x + 1*parity));
+	                }
+	            }
+	        } catch (NullPointerException exc) {}
+
+	        // nieparzyste   o      parzyste     x
+  	        //              x	    	       o
+	        try {
+	            if (!this.getNode(y + (-1*parity), x + 1*parity).getColor().equals("WHITE")) {
+	                if(this.getNode(y + (-2*parity), x + 1*parity).getColor().equals("WHITE") && !highlighted.contains(this.getNode(y + (-2*parity), x + 1*parity))) {
+	                    highlightField(this.getNode(y + (-2*parity), x + 1*parity));
+	                    findAHop(this.getNode(y + (-2*parity), x + 1*parity));
+	                }
+	            }
+	        } catch (NullPointerException exc) {}
+	        
+	        // nieparzyste  x      parzyste    x
+  	        //              o	    	       o
+	        try {
+	            if (!this.getNode(y - 1, x).getColor().equals("WHITE")) {
+	                if (this.getNode(y - 2, x + (-1*parity)).getColor().equals("WHITE") && !highlighted.contains(this.getNode(y - 2, x + (-1*parity)))) {
+	                    highlightField(this.getNode(y - 2, x + (-1*parity)));
+	                    findAHop(this.getNode(y - 2, x + (-1*parity)));
+	                }
+	            }
+	        } catch (NullPointerException exc) {}
+	        // nieparzyste  o      parzyste    o
+  	        //              x	    	       x
+	        try {
+	            if (!this.getNode(y + 1, x).getColor().equals("WHITE")) {
+	                if (this.getNode(y + 2, x + (-1*parity)).getColor().equals("WHITE") && !highlighted.contains(this.getNode(y + 2, x + (-1*parity)))) {
+	                    highlightField(this.getNode(y + 2, x + (-1*parity)));
+	                    findAHop(this.getNode(y + 2, x + (-1*parity)));
+	                }
+	            }
+	        } catch (NullPointerException exc) {}
+
+	        // nieparzyste i parzyste  x o 
+  	        //              
+	        try {
+	        if (!this.getNode(y, x - 1).getColor().equals("WHITE")) {
+	            if(this.getNode(y, x - 2).getColor().equals("WHITE") && !highlighted.contains(this.getNode(y, x - 2))) {
+	                highlightField(this.getNode(y, x - 2));
+	                findAHop(this.getNode(y, x - 2));
+	            }
+	        }
+	        } catch (NullPointerException exc) {}
+	        // nieparzyste i parzyste  o x
+
+	        try {
+	        if (!this.getNode(y, x + 1).getColor().equals("WHITE")) {
+	            if(this.getNode(y, x + 2).getColor().equals("WHITE") && !highlighted.contains(this.getNode(y, x + 2))) {
+	                    highlightField(this.getNode(y, x + 2));
+	                    findAHop(this.getNode(y, x + 2));
+	                }
+	            }
+	        }catch (NullPointerException exc) {}
+	    }
+
+
+	   private void highlightField(Field node) {
+			if (node.getXCord() != -1 && node.getColor().equals("WHITE") && !(highlighted.contains(node))) {
+	            highlighted.add(node);
+	            this.getNode(node.getYCord(), node.getXCord()).setStroke(Paint.valueOf(FieldsColor.LEGAL.getColor()));
+	        }			
+
 		}
 
 

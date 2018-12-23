@@ -12,7 +12,7 @@ package project.game.board;
             this.xCord = x;
             this.fieldColor = FieldsColor.values()[i];
             this.setStroke(Paint.valueOf("BLACK"));
-            this.setStrokeWidth(1);
+            this.setStrokeWidth(2);
         }
 
         public Field(FieldsColor color, int y, int x) {
@@ -23,8 +23,9 @@ package project.game.board;
         }
 
         static Field getNullField() {
-            Field nullField = new Field(0, -1, -1);
+            Field nullField = new Field(8, -1, -1);
             nullField.setStroke(Paint.valueOf("TRANSPARENT"));
+            nullField.setRadius(1);
             return nullField;
         }
 

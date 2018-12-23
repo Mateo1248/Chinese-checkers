@@ -11,7 +11,8 @@ public enum FieldsColor {
 	    PLAYER4("GREEN"),
 	    PLAYER5("GRAY"),
 	    PLAYER6("PINK"),
-	    LEGAL("CHARTREUSE");
+	    LEGAL("GRAY"),
+	    EH("TRANSPARENT");
 
 	    private final String color;
 

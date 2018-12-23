@@ -15,10 +15,12 @@ import project.game.board.FieldsColor;
 //TODO: WINDOW PRZECHOWUJE 'ID klienta' KLIENT MA SWOJ NUMEREK/KOLOREK/RAMIE 
 //wiec treba tutaj zmienic do wszystkiego jesli field jest legal && czy jest  danego koloru (metoda get Client Color bedzie przechowywana u klienta
 
+
+
 public class GameWind {
 	GameWind(int num,int numb){
 	final int DISPLAY_WIDTH = 500, DISPLAY_HEIGHT = 500;
-    final double RADIUS = 15.0;
+    final double RADIUS = 13.0;
 
     Stage game= new Stage();
     
@@ -33,26 +35,30 @@ public class GameWind {
     Board board =  Board.initialize(num);
 
     s.addEventFilter(MouseEvent.MOUSE_CLICKED, evt -> {
-    	try {
-    		  System.out.print(((Field) evt.getPickResult().getIntersectedNode()).getYCord() + " ");
-              System.out.print(((Field) evt.getPickResult().getIntersectedNode()).getXCord() + " ");
-              System.out.println(((Field) evt.getPickResult().getIntersectedNode()).getColor());
+        try {
+        	   System.out.print(((Field) evt.getPickResult().getIntersectedNode()).getYCord() + " ");
+            System.out.print(((Field) evt.getPickResult().getIntersectedNode()).getXCord() + " ");
+            System.out.println(((Field) evt.getPickResult().getIntersectedNode()).getColor());
 
-              if (board.isLegal((Field) evt.getPickResult().getIntersectedNode())) {
-              	board.changeFieldColor((Field) evt.getPickResult().getIntersectedNode(), board.selected.getFieldColor());
-                  board.changeFieldColor(board.selected, FieldsColor.NO_PLAYER);
-                  board.flushHighlighted();
-              }
-              else {
-                  board.flushHighlighted();
-                  board.selected = ((Field) evt.getPickResult().getIntersectedNode());
-                  board.highlightLegalMoves(board.selected);
-              }
+            if (board.isPossible((Field) evt.getPickResult().getIntersectedNode())) {
+                board.changeFieldsColor((Field) evt.getPickResult().getIntersectedNode(), board.selected.getFieldColor());
+                board.changeFieldsColor(board.selected, FieldsColor.NO_PLAYER);
+                board.flushPossible();
+            }
+            else {
+                board.flushPossible();
+                board.selected = ((Field) evt.getPickResult().getIntersectedNode());
+                board.showPossbileMoves(board.selected);
+            }
 
         } catch (NullPointerException exc) {
             System.out.println("No Field clicked.");
         }
-       });
+
+        catch (Exception exc) {
+            System.out.println("No Field clicked.");
+        }
+    });
 
     for (int y = 0; y < board.HEIGHT; ++y) {
         for (int x = 0; x < board.WIDTH; ++x) {
