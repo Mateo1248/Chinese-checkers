@@ -45,7 +45,7 @@ public class ClientMenu extends Application {
 		        primaryStage.close();
 		        client.write(Integer.toString(pn.getnumP()));
 		        client.write(Integer.toString(pn.getnumB()));
-		        new GameWind(pn.getnumP(),pn.getnumB());
+		        new GameWind(pn.getnumP(), pn.getnumB(), client);
 		    });
 		    but.getChildren().add(b);
 	        root.getChildren().add(but);
@@ -56,7 +56,7 @@ public class ClientMenu extends Application {
     	 * jesli nie pobierz info od servera wlacz okno gry i czekaj na jej rozpoczecie
     	 */
     	else {
-    		new GameWind(Integer.parseInt(client.read()), Integer.parseInt(client.read()));
+    		new GameWind(Integer.parseInt(client.read()), Integer.parseInt(client.read()), client);
     	}
     }
     

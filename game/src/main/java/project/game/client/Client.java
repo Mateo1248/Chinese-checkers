@@ -20,20 +20,18 @@ public class Client {
 	Client() {
 		try {
 			socket = new Socket("localhost", 4444);
+			try {
+	        	in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+				out = new PrintWriter(this.socket.getOutputStream(), true);
+			} 
+			catch (IOException e) { e.printStackTrace(); }
+			
+			//get id
+	        this.id = Integer.parseInt( read() );
+	        System.out.println("client odebrano id " + id);
 		} 
 		catch (UnknownHostException e) { e.printStackTrace(); } 
 		catch (IOException e) { e.printStackTrace(); }
-		
-		
-		try {
-        	in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-			out = new PrintWriter(this.socket.getOutputStream(), true);
-		} 
-		catch (IOException e) { e.printStackTrace(); }
-		
-		//get id
-        this.id = Integer.parseInt( read() );
-        System.out.println("client odebrano id " + id);
 	}
 	
 	

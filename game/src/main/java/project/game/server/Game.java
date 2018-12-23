@@ -38,7 +38,7 @@ public class Game extends Thread{
 	
 	
 	private void waitForPlayers() {
-		for(int i=1 ; i<playersNo ; i++) {
+		for(int i=1 ; i<playersNo-botsNo ; i++) {
 			try { 
 				players.add( new Player(serverSocket.accept(), i)); 
 				players.get(i).write(Integer.toString(playersNo));
