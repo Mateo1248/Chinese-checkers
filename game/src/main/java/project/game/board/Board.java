@@ -107,7 +107,7 @@ public  class Board {
 	         x x         x x
 	        x o x ==   x o x
 	         x x         x x
-	         */
+	  */
 	        // parzyste o    nieparzyste      x
   	        //           x						o
 	        

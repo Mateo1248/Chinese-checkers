@@ -15,17 +15,22 @@ public class BotsNumWindow {
             case 2:
 
                   choices.add(1);
+                  choices.add(0);
+
                   break;
             case 3:
+                choices.add(0);
                 choices.add(1);
                choices.add(2);
                break;
             case 4:
+                choices.add(0);
                  choices.add(1);
                  choices.add(2);
                  choices.add(3);
                     break;
-                 case 6:
+                 case 6:    
+                choices.add(0);
                 choices.add(1);
                 choices.add(2);
                 choices.add(3);
