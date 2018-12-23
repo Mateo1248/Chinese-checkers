@@ -16,13 +16,12 @@ public  class Board {
 	public Field selected;
 	private ArrayList<Field> highlighted;
 
-	    public static Board initialize(int num){
+	    public static  Board initialize(int num){
 	    	switch(num){
 	    	case 2:
-	    			return new Boardfor2();
+	    		return new Boardfor2();
 	    	case 3:
 	    		return new Boardfor3();
-	    			
 	    	case 4:
 	    		return new Boardfor4();
 	    	case 6: 
@@ -53,6 +52,7 @@ public  class Board {
 	    public boolean isPossible(Field field) {
 	        return highlighted.contains(field);
 	    }
+
 		public void changeFieldsColor(Field field, FieldsColor fieldColor) {
 			  if (field.getXCord() != -1) {
 		            this.getNode(field.getYCord(), field.getXCord()).setColor(fieldColor);
@@ -180,6 +180,7 @@ public  class Board {
 	            highlighted.add(node);
 	            this.getNode(node.getYCord(), node.getXCord()).setStroke(Paint.valueOf(FieldsColor.LEGAL.getColor()));
 	        }			
+
 		}
 
 

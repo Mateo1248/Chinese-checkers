@@ -1,5 +1,6 @@
 package project.game.client;
 
+
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -11,6 +12,8 @@ import project.game.board.Board;
 import project.game.board.Field;
 import project.game.board.FieldsColor;
 
+//TODO: WINDOW PRZECHOWUJE 'ID klienta' KLIENT MA SWOJ NUMEREK/KOLOREK/RAMIE 
+//wiec treba tutaj zmienic do wszystkiego jesli field jest legal && czy jest  danego koloru (metoda get Client Color bedzie przechowywana u klienta
 
 
 
@@ -29,7 +32,7 @@ public class GameWind {
     img.setImage(image);
     Scene s = new Scene(root, DISPLAY_WIDTH, DISPLAY_HEIGHT);
     root.getChildren().add(img);
-    Board board = Board.initialize(num);
+    Board board =  Board.initialize(num);
 
     s.addEventFilter(MouseEvent.MOUSE_CLICKED, evt -> {
         try {
@@ -51,6 +54,7 @@ public class GameWind {
         } catch (NullPointerException exc) {
             System.out.println("No Field clicked.");
         }
+
         catch (Exception exc) {
             System.out.println("No Field clicked.");
         }
