@@ -5,7 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-/*
+/* TODO:
  * watek gry, tu sie dzieje
  * tworzymy plansze
  * czekamy na graczy
@@ -33,7 +33,7 @@ public class Game extends Thread{
 	public void run() {
 		System.out.println("liczba graczy " + playersNo + "liczba botow " + botsNo);
 		waitForPlayers();
-		//LOT TO DO
+		//LOT TODO
 	}
 	
 	

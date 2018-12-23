@@ -33,10 +33,7 @@ public class ClientMenu extends Application {
     	if(client.isHost()) {
 	        primaryStage.setTitle("Chinese-Checkers Client");
 	        Group root = new Group();
-	        VBox but=new VBox();
-	        
-	        
-	        
+	        VBox but=new VBox();	        
 		    Button b = new Button("choose players number");
 		    b.setOnAction(event -> {
 		        PlayersNumWindow pn = new PlayersNumWindow();
@@ -56,6 +53,7 @@ public class ClientMenu extends Application {
     	 * jesli nie pobierz info od servera wlacz okno gry i czekaj na jej rozpoczecie
     	 */
     	else {
+    		
     		new GameWind(Integer.parseInt(client.read()), Integer.parseInt(client.read()));
     	}
     }
