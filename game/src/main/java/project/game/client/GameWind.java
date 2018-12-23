@@ -18,7 +18,12 @@ import project.game.board.FieldsColor;
 
 
 public class GameWind {
-	GameWind(int num,int numb){
+	
+	private Client client;
+	
+	GameWind(int num, int numb, Client client){
+		
+	this.client = client;
 	final int DISPLAY_WIDTH = 500, DISPLAY_HEIGHT = 500;
     final double RADIUS = 13.0;
 
