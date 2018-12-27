@@ -12,9 +12,9 @@ public  class Board {
 	public int[][] STAR_REPRESENTATION;
 	public int HEIGHT;
 	public int WIDTH;
-	private Field board[][];
+	public Field board[][];
 	public Field selected;
-	private ArrayList<Field> highlighted;
+	public ArrayList<Field> highlighted;
 
 	    public static  Board initialize(int num){
 	    	switch(num){

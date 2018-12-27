@@ -3,9 +3,16 @@ package project.game.client;
 
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import project.game.board.Board;
@@ -37,8 +44,22 @@ public class GameWind {
     img.setImage(image);
     Scene s = new Scene(root, DISPLAY_WIDTH, DISPLAY_HEIGHT);
     root.getChildren().add(img);
+    TextField name = new TextField("Player number "+(client.getId()+1)); 
+    TextField text = new TextField(""); 
+    VBox texts = new VBox(10);
+    name.setBackground(Background.EMPTY);
+    name.setBorder(Border.EMPTY);
+    text.setBackground(Background.EMPTY);
+    text.setBorder(Border.EMPTY);
+    texts.getChildren().add(name);
+    texts.getChildren().add(text);
+    root.getChildren().add(texts);
+    
     Board board =  Board.initialize(num);
 
+    //if( Client.getMessege()=='MYTURN')
+    text.setText("Your turn");
+    
     s.addEventFilter(MouseEvent.MOUSE_CLICKED, evt -> {
         try {
         	   System.out.print(((Field) evt.getPickResult().getIntersectedNode()).getYCord() + " ");
@@ -49,6 +70,9 @@ public class GameWind {
                 board.changeFieldsColor((Field) evt.getPickResult().getIntersectedNode(), board.selected.getFieldColor());
                 board.changeFieldsColor(board.selected, FieldsColor.NO_PLAYER);
                 board.flushPossible();
+                evt.consume();
+                text.setText("Turn player number "+(client.getId()+2)%6);
+                //
             }
             else {
                 board.flushPossible();

@@ -61,4 +61,7 @@ public class Client {
 	public void sendMessage(String x) {
 		write(x);
 	}
+	public int getId() {
+		return id;
+	}
 }
