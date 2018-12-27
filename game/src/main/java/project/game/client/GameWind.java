@@ -56,8 +56,10 @@ public class GameWind {
     root.getChildren().add(texts);
     
     Board board =  Board.initialize(num);
-
-    //if( Client.getMessege()=='MYTURN')
+    //TODO:enum dla communicatora ktory bedzie posiadal nazwy sygnalow Turn, Move, Win, Quit i w communicatorze 
+    //w zaleznosci od tego 1szego wyrazu beda  te argumenty poszczegolnie inaczej parsowane
+    
+    //if( Client.getMessage()=="TURN"+client.getId()) {
     text.setText("Your turn");
     
     s.addEventFilter(MouseEvent.MOUSE_CLICKED, evt -> {
@@ -65,16 +67,18 @@ public class GameWind {
         	   System.out.print(((Field) evt.getPickResult().getIntersectedNode()).getYCord() + " ");
             System.out.print(((Field) evt.getPickResult().getIntersectedNode()).getXCord() + " ");
             System.out.println(((Field) evt.getPickResult().getIntersectedNode()).getColor());
-
-            if (board.isPossible((Field) evt.getPickResult().getIntersectedNode())) {
-                board.changeFieldsColor((Field) evt.getPickResult().getIntersectedNode(), board.selected.getFieldColor());
+            Field f= (Field) evt.getPickResult().getIntersectedNode();
+            if (board.isPossible(f)) {
+                board.changeFieldsColor(f, board.selected.getFieldColor());
                 board.changeFieldsColor(board.selected, FieldsColor.NO_PLAYER);
                 board.flushPossible();
                 evt.consume();
                 text.setText("Turn player number "+(client.getId()+2)%6);
-                //
+                client.sendMessage("MOVE"+" "+client.getId()+" "+board.selected.getXCord()+" "+board.selected.getYCord()+" "+f.getXCord()+" "+f.getYCord());
+                String ss="MOVE"+" "+client.getId()+" "+board.selected.getXCord()+" "+board.selected.getYCord()+" "+f.getXCord()+" "+f.getYCord();
+                System.out.println(ss);
             }
-            else {
+            else if(f.getFieldColor()==FieldsColor.values()[client.getId()+1]){
                 board.flushPossible();
                 board.selected = ((Field) evt.getPickResult().getIntersectedNode());
                 board.showPossbileMoves(board.selected);
@@ -88,7 +92,7 @@ public class GameWind {
             System.out.println("No Field clicked.");
         }
     });
-
+    
     for (int y = 0; y < board.HEIGHT; ++y) {
         for (int x = 0; x < board.WIDTH; ++x) {
             board.getNode(y, x).setCenterY(DISPLAY_HEIGHT*(y)/(board.HEIGHT-1));
