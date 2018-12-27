@@ -1,6 +1,7 @@
 package project.game.client;
 
 
+import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
@@ -14,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import project.game.board.Board;
 import project.game.board.Field;
@@ -44,15 +46,26 @@ public class GameWind {
     img.setImage(image);
     Scene s = new Scene(root, DISPLAY_WIDTH, DISPLAY_HEIGHT);
     root.getChildren().add(img);
-    TextField name = new TextField("Player number "+(client.getId()+1)); 
+    TextField name = new TextField("Player number "+(client.getId()+1)+" Color:"); 
     TextField text = new TextField(""); 
     VBox texts = new VBox(10);
+    HBox xd=new HBox();
+    xd.setCenterShape(true);
+    Circle o=new Circle();
+    o.setRadius(10);
+    o.setFill(Paint.valueOf(FieldsColor.values()[client.getId()+1].getColor()));
+    o.setStroke(Paint.valueOf("BLACK"));
     name.setBackground(Background.EMPTY);
     name.setBorder(Border.EMPTY);
     text.setBackground(Background.EMPTY);
     text.setBorder(Border.EMPTY);
-    texts.getChildren().add(name);
+    
+    xd.getChildren().add(name);
+    xd.getChildren().add(o);
+
+    texts.getChildren().add(xd); 
     texts.getChildren().add(text);
+    
     root.getChildren().add(texts);
     
     Board board =  Board.initialize(num);
@@ -83,14 +96,17 @@ public class GameWind {
                 board.selected = ((Field) evt.getPickResult().getIntersectedNode());
                 board.showPossbileMoves(board.selected);
             }
+            else {
+            	board.flushPossible();
+            }
 
         } catch (NullPointerException exc) {
             System.out.println("No Field clicked.");
         }
 
-        catch (Exception exc) {
+       catch (Exception exc) {
             System.out.println("No Field clicked.");
-        }
+       }
     });
     
     for (int y = 0; y < board.HEIGHT; ++y) {
