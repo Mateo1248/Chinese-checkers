@@ -68,9 +68,9 @@ public  class Board {
 	        highlighted.clear();			
 		}
 		public void showPossbileMoves(Field selected2) {
-	        if (!selected.getColor().equals("WHITE")) {
-	            int ySelected = selected.getYCord();
-	            int xSelected = selected.getXCord();
+	        if (!selected2.getColor().equals("WHITE")) {
+	            int ySelected = selected2.getYCord();
+	            int xSelected = selected2.getXCord();
 
 	            if (ySelected % 2 == 1) {
 	                highlightField(this.getNode(ySelected - 1, xSelected - 1));
@@ -83,7 +83,7 @@ public  class Board {
 	            highlightField(this.getNode(ySelected + 1, xSelected));
 	            highlightField(this.getNode(ySelected, xSelected - 1));
 	            highlightField(this.getNode(ySelected, xSelected + 1));
-		        findAHop(selected);			
+		        findAHop(selected2);			
 
 	        }
 
