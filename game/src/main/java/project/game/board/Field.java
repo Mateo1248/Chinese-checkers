@@ -22,7 +22,7 @@ package project.game.board;
             this.setStroke(Paint.valueOf("BLACK"));
         }
 
-        static Field getNullField() {
+        public static Field getNullField() {
             Field nullField = new Field(8, -1, -1);
             nullField.setStroke(Paint.valueOf("TRANSPARENT"));
             nullField.setRadius(1);
