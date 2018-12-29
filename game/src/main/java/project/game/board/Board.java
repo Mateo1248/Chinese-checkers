@@ -9,9 +9,48 @@ import project.game.board.FieldsColor;
 
 
 public  class Board {
-	public int[][] STAR_REPRESENTATION;
-	public int HEIGHT;
-	public int WIDTH;
+	public int[][] STAR_REPRESENTATION=
+		 {
+			{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, 1, 1, -1, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, 1, 1, 1, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1},
+
+			{-1,6, 6, 6, 6,  0,  0,  0,  0,  0, 2, 2, 2, 2, -1},
+
+			{-1,6, 6, 6,  0,  0,  0,  0,  0,  0, 2, 2, 2, -1, -1},
+
+			{-1,-1, 6, 6,  0,  0,  0,  0,  0,  0,  0, 2, 2, -1, -1},
+
+			{-1,-1, 6,  0,  0,  0,  0,  0,  0,  0,  0, 2, -1, -1, -1},
+
+			{-1,-1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1, -1},
+
+			{-1,-1, 5,  0,  0,  0,  0,  0,  0,  0,  0, 3, -1, -1, -1},
+
+			{-1,-1, 5, 5,  0,  0,  0,  0,  0,  0,  0, 3, 3, -1, -1},
+
+			{-1,5, 5, 5,  0,  0,  0,  0,  0,  0, 3, 3, 3, -1, -1},
+
+			{-1,5, 5, 5, 5,  0,  0,  0,  0,  0, 3, 3, 3, 3, -1},
+
+			{-1,-1, -1, -1, -1, 4, 4, 4, 4, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, 4, 4, 4, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, 4, 4, -1, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, -1, 4, -1, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
+};
+	public int HEIGHT=STAR_REPRESENTATION.length;;
+	public int WIDTH=STAR_REPRESENTATION[0].length;;
 	public Field board[][];
 	public Field selected;
 	public ArrayList<Field> highlighted;
@@ -29,19 +68,7 @@ public  class Board {
 	    	}
 	    	return null;
 	    }
-	    public void draw() {
-	        board = new Field[HEIGHT][WIDTH];
-	        highlighted = new ArrayList<>();
-	        for (int y = 0; y < board.length; ++y) {
-	            for (int x = 0; x < board[0].length; ++x) {
-	                if (STAR_REPRESENTATION[y][x] != -1) {
-	                    board[y][x] = new Field(STAR_REPRESENTATION[y][x], y, x);
-	                } else {
-	                    board[y][x] = Field.getNullField();
-	                }
-	            }
-	        }
-	    }
+	    
 
 	    public Field getNode(int y, int x) {
 	        if (y >= HEIGHT || y < 0 || x >= WIDTH || x < 0)

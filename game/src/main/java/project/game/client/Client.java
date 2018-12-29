@@ -14,8 +14,8 @@ public class Client {
 	private Socket socket;
 	private BufferedReader in;
 	private PrintWriter out;
-	private int id=1;
-	
+	private int id;
+	private int idgame;
 	
 	Client() {
 		try {
@@ -63,5 +63,32 @@ public class Client {
 	}
 	public int getId() {
 		return id;
+	}
+	public void setIdGame(int numP) {
+		switch(numP) {
+		case 2:
+			if(id==0)
+				idgame=1;
+			if(id==1)
+				idgame= 4;
+			break;
+		case 3:
+			idgame= (id+1)*2;
+		case 4:
+			if(id==0)
+				idgame= 2;
+			if(id==1)
+				idgame= 3;
+			if(id==2)
+				idgame= 5;
+			if(id==3)
+				idgame= 6;
+			break;
+		case 6:
+			idgame= id+1;
+		}
+	}
+	public int getIdGame() {
+		return idgame;
 	}
 }
