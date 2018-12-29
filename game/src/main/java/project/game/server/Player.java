@@ -12,6 +12,7 @@ public class Player {
 	private int id;
 	private BufferedReader in;
 	private PrintWriter out;
+	private int idtri;
 	
 	Player(Socket socket, int id) {
 		this.socket = socket;
@@ -54,5 +55,34 @@ public class Player {
 	
 	public void sendMessage(String x) {
 		write(x);
+	}
+	public void setIdTriangle(int numP) {
+		switch(numP) {
+		case 2:
+			if(id==0)
+				idtri=1;
+			if(id==1)
+				idtri= 4;
+			break;
+		case 3:
+			idtri= (id+1)*2;
+			break;
+		case 4:
+			if(id==0)
+				idtri= 2;
+			if(id==1)
+				idtri= 3;
+			if(id==2)
+				idtri= 5;
+			if(id==3)
+				idtri= 6;
+			break;
+		case 6:
+			idtri= id+1;
+			break;
+		}
+	}
+	public int getIdTriangle() {
+		return idtri;
 	}
 }

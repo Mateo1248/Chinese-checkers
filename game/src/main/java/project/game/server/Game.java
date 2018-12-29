@@ -23,7 +23,7 @@ public class Game extends Thread {
 	private ServerSocket serverSocket;
 	private ArrayList<Player> players;
 	private int playersNo, botsNo;
-	final int[][] boardPattern={
+    int[][] gameBoard={
 			{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 
 			{-1,-1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1},
@@ -62,7 +62,45 @@ public class Game extends Thread {
 
 			{-1,-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
 	};
-	int [][]gameBoard=boardPattern;
+	int [][]boardPattern={
+			{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, 1, 1, -1, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, 1, 1, 1, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1},
+
+			{-1,6, 6, 6, 6,  0,  0,  0,  0,  0, 2, 2, 2, 2, -1},
+
+			{-1,6, 6, 6,  0,  0,  0,  0,  0,  0, 2, 2, 2, -1, -1},
+
+			{-1,-1, 6, 6,  0,  0,  0,  0,  0,  0,  0, 2, 2, -1, -1},
+
+			{-1,-1, 6,  0,  0,  0,  0,  0,  0,  0,  0, 2, -1, -1, -1},
+
+			{-1,-1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1, -1},
+
+			{-1,-1, 5,  0,  0,  0,  0,  0,  0,  0,  0, 3, -1, -1, -1},
+
+			{-1,-1, 5, 5,  0,  0,  0,  0,  0,  0,  0, 3, 3, -1, -1},
+
+			{-1,5, 5, 5,  0,  0,  0,  0,  0,  0, 3, 3, 3, -1, -1},
+
+			{-1,5, 5, 5, 5,  0,  0,  0,  0,  0, 3, 3, 3, 3, -1},
+
+			{-1,-1, -1, -1, -1, 4, 4, 4, 4, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, 4, 4, 4, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, 4, 4, -1, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, -1, 4, -1, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
+	};;
 	
 	
 	Game(ServerSocket serverSocket, Player host, int playersNo, int botsNo) {
@@ -88,7 +126,8 @@ public class Game extends Thread {
 		//petla gry
 		while(true) {
 			String move;
-			
+			players.get(playerSequence.get(i)).setIdTriangle(playersNo);
+
 			//wyslij wiadomosc czyja kolej
 			sendMessageToPlayers("TURN " + playerSequence.get(i), -1);
 			
@@ -104,6 +143,15 @@ public class Game extends Thread {
 				move(com.getArg(0), com.getArg(1), com.getArg(2), com.getArg(3));
 			}
 			
+			
+			boolean b=isPlayerWon(playerSequence.get(i));
+			
+			if(b) {
+				System.out.println("NO MORDO WYGRAŁEŚ"+players.get(playerSequence.get(i)).getId());
+			}/*
+			else {
+				sendMessageToPlayers("NOTWON", -1);
+			}*/
 			for(int j=0 ; j<gameBoard.length ; j++) {
 				for(int k=0 ; k<gameBoard[0].length ; k++) {
 					if(gameBoard[j][k]<0)
@@ -113,13 +161,19 @@ public class Game extends Thread {
 				}
 				System.out.println();
 			}
-			
-			if(isPlayerWon(playerSequence.get(i))) {
-				sendMessageToPlayers("WON", -1);
-			}/*
-			else {
-				sendMessageToPlayers("NOTWON", -1);
-			}*/
+			for(int j=0 ; j<gameBoard.length ; j++) {
+				for(int k=0 ; k<gameBoard[0].length ; k++) {
+					if(boardPattern[j][k]<0)
+						System.out.print(boardPattern[j][k] + " ");
+					else 
+						System.out.print(boardPattern[j][k] + "  ");	
+				}
+				System.out.println();
+			}
+			System.out.println(playerSequence.get(i));
+			System.out.println(players.get(playerSequence.get(i)).getIdTriangle());
+
+
 			i++;
 			i=i%playerSequence.size();
 		}
@@ -183,7 +237,19 @@ public class Game extends Thread {
 	
 	
 	private boolean isPlayerWon(int id) {
-		
-		return false;
+		int pN=players.get(id).getIdTriangle();
+		int oppN=(pN+2)%6+1;
+		for(int j=0 ; j<gameBoard.length ; j++) {
+			for(int k=0 ; k<gameBoard[0].length ; k++) {
+				if(boardPattern[j][k]==oppN) {
+						if(gameBoard[j][k]==pN) {
+							continue;}
+						else {
+							return false;
+						}
+				}
+			}
+		}
+		return true;
 	}
  }
