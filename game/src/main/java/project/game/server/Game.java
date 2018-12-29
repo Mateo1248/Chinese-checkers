@@ -16,7 +16,7 @@ import java.util.Random;
  */
 
 
-public class Game extends Thread{
+public class Game extends Thread {
 	
 	private ServerSocket serverSocket;
 	private ArrayList<Player> players;
@@ -86,12 +86,16 @@ public class Game extends Thread{
 	
 	private ArrayList<Integer> randomPlayerSequence() {
 		ArrayList<Integer> temp = new ArrayList<Integer>();
+		Random rnd = new Random();
 		
-		for(int i=0 ; i<playersNo ; i++) 
-			temp.add(i);
+		int i = rnd.nextInt(playersNo);
 		
-		Collections.shuffle(temp);		
-		
+		for(int j=i ; j<playersNo ; j++) {
+			temp.add(j);
+		}
+		for(int j=0 ; j<i ; j++) {
+			temp.add(j);
+		}
 		return temp;
 	}
 	

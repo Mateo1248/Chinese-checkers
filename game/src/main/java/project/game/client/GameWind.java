@@ -1,10 +1,8 @@
 package project.game.client;
 
 
-import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -13,7 +11,6 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -81,7 +78,7 @@ public class GameWind extends Thread{
     s.addEventFilter(MouseEvent.MOUSE_CLICKED, evt -> {
     	if(yourTurn) {
 	        try {
-	        	   System.out.print(((Field) evt.getPickResult().getIntersectedNode()).getYCord() + " ");
+	        	System.out.print(((Field) evt.getPickResult().getIntersectedNode()).getYCord() + " ");
 	            System.out.print(((Field) evt.getPickResult().getIntersectedNode()).getXCord() + " ");
 	            System.out.println(((Field) evt.getPickResult().getIntersectedNode()).getColor());
 	            Field f= (Field) evt.getPickResult().getIntersectedNode();
@@ -90,8 +87,7 @@ public class GameWind extends Thread{
 	                board.changeFieldsColor(board.selected, FieldsColor.NO_PLAYER);
 	                board.flushPossible();
 	                evt.consume();
-	                //text.setText("Turn player number "+(client.getId()+2)%6);
-	                client.sendMessage("MOVE "+board.selected.getYCord()+" "+board.selected.getXCord()+" "+f.getYCord()+" "+f.getXCord()+" "+client.getId());
+	                client.sendMessage("MOVE "+board.selected.getYCord()+" "+board.selected.getXCord()+" "+f.getYCord()+" "+f.getXCord());
 	                String ss="MOVE "+board.selected.getYCord()+" "+board.selected.getXCord()+" "+f.getYCord()+" "+f.getXCord();
 	                System.out.println(ss);
 	            }
@@ -142,7 +138,7 @@ public class GameWind extends Thread{
 				//wykonaj ruch
 			}
 			else {
-				text.setText("other player turn");
+				text.setText("Player number " + queue.getArg(0)+1 + " turn");
 				yourTurn=false;
 				//czekaj na ruch gracza
 				move = client.getMessage();
