@@ -135,7 +135,7 @@ public class GameWind extends Thread{
 				//wykonaj ruch
 			}
 			else {
-				text.setText("Player number " + queue.getArg(0)+1 + " turn");
+				text.setText("Player number " + (queue.getArg(0)+1) + " turn");
 				yourTurn=false;
 				//czekaj na ruch gracza
 				move = client.getMessage();

@@ -74,6 +74,7 @@ public class Client {
 			break;
 		case 3:
 			idgame= (id+1)*2;
+			break;
 		case 4:
 			if(id==0)
 				idgame= 2;

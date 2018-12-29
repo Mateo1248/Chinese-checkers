@@ -87,6 +87,7 @@ public class Game extends Thread {
 		
 		//petla gry
 		while(true) {
+			String move;
 			
 			//wyslij wiadomosc czyja kolej
 			sendMessageToPlayers("TURN " + playerSequence.get(i), -1);
@@ -94,11 +95,31 @@ public class Game extends Thread {
 			if(playerSequence.get(i) >= players.size()) {
 				//bot robi ruch
 				int []coordinates = botMakeMove();
+				move(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
 			}
 			else {
 				//czekaj na ruch gracza i wyslij do innych
-				sendMessageToPlayers(getMessageFromPlayer(playerSequence.get(i)), playerSequence.get(i));
+				sendMessageToPlayers( (move=getMessageFromPlayer(playerSequence.get(i))), playerSequence.get(i));
+				Communicator com = Communicator.fromString(move);
+				move(com.getArg(0), com.getArg(1), com.getArg(2), com.getArg(3));
 			}
+			
+			for(int j=0 ; j<gameBoard.length ; j++) {
+				for(int k=0 ; k<gameBoard[0].length ; k++) {
+					if(gameBoard[j][k]<0)
+						System.out.print(gameBoard[j][k] + " ");
+					else 
+						System.out.print(gameBoard[j][k] + "  ");	
+				}
+				System.out.println();
+			}
+			
+			if(isPlayerWon(playerSequence.get(i))) {
+				sendMessageToPlayers("WON", -1);
+			}/*
+			else {
+				sendMessageToPlayers("NOTWON", -1);
+			}*/
 			i++;
 			i=i%playerSequence.size();
 		}
@@ -153,9 +174,16 @@ public class Game extends Thread {
 		gameBoard[x1][y1]=0;
 	}
 	
+	
 	private int[] botMakeMove() {
 		int []x = new int[4];
 		
 		return x;
+	}
+	
+	
+	private boolean isPlayerWon(int id) {
+		
+		return false;
 	}
  }
