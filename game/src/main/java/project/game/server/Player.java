@@ -30,6 +30,10 @@ public class Player {
 		System.out.println("player wyslal id: " + id);
 	}
 	
+	public int getId() {
+		return this.id;
+	}
+	
 	
 	public String read() {
 		try { return in.readLine(); } 

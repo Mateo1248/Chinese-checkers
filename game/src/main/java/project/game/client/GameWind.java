@@ -20,15 +20,19 @@ import javafx.stage.Stage;
 import project.game.board.Board;
 import project.game.board.Field;
 import project.game.board.FieldsColor;
+import project.game.server.Communicator;
 
 //TODO: WINDOW PRZECHOWUJE 'ID klienta' KLIENT MA SWOJ NUMEREK/KOLOREK/RAMIE 
 //wiec treba tutaj zmienic do wszystkiego jesli field jest legal && czy jest  danego koloru (metoda get Client Color bedzie przechowywana u klienta
 
 
 
-public class GameWind {
+public class GameWind extends Thread{
 	
 	private Client client;
+	private TextField text;
+	private Board board;
+	private boolean yourTurn;
 	
 	GameWind(int num, int numb, Client client){
 		
@@ -47,7 +51,7 @@ public class GameWind {
     Scene s = new Scene(root, DISPLAY_WIDTH, DISPLAY_HEIGHT);
     root.getChildren().add(img);
     TextField name = new TextField("Player number "+(client.getId()+1)+" Color:"); 
-    TextField text = new TextField(""); 
+    text = new TextField("waiting  for players..."); 
     VBox texts = new VBox(10);
     HBox xd=new HBox();
     xd.setCenterShape(true);
@@ -68,45 +72,46 @@ public class GameWind {
     
     root.getChildren().add(texts);
     
-    Board board =  Board.initialize(num);
+    board =  Board.initialize(num);
     //TODO:enum dla communicatora ktory bedzie posiadal nazwy sygnalow Turn, Move, Win, Quit i w communicatorze 
     //w zaleznosci od tego 1szego wyrazu beda  te argumenty poszczegolnie inaczej parsowane
     
-    //if( Client.getMessage()=="TURN"+client.getId()) {
-    text.setText("Your turn");
+    
     
     s.addEventFilter(MouseEvent.MOUSE_CLICKED, evt -> {
-        try {
-        	   System.out.print(((Field) evt.getPickResult().getIntersectedNode()).getYCord() + " ");
-            System.out.print(((Field) evt.getPickResult().getIntersectedNode()).getXCord() + " ");
-            System.out.println(((Field) evt.getPickResult().getIntersectedNode()).getColor());
-            Field f= (Field) evt.getPickResult().getIntersectedNode();
-            if (board.isPossible(f)) {
-                board.changeFieldsColor(f, board.selected.getFieldColor());
-                board.changeFieldsColor(board.selected, FieldsColor.NO_PLAYER);
-                board.flushPossible();
-                evt.consume();
-                text.setText("Turn player number "+(client.getId()+2)%6);
-                client.sendMessage("MOVE"+" "+client.getId()+" "+board.selected.getXCord()+" "+board.selected.getYCord()+" "+f.getXCord()+" "+f.getYCord());
-                String ss="MOVE"+" "+client.getId()+" "+board.selected.getXCord()+" "+board.selected.getYCord()+" "+f.getXCord()+" "+f.getYCord();
-                System.out.println(ss);
-            }
-            else if(f.getFieldColor()==FieldsColor.values()[client.getId()+1]){
-                board.flushPossible();
-                board.selected = ((Field) evt.getPickResult().getIntersectedNode());
-                board.showPossbileMoves(board.selected);
-            }
-            else {
-            	board.flushPossible();
-            }
-
-        } catch (NullPointerException exc) {
-            System.out.println("No Field clicked.");
-        }
-
-       catch (Exception exc) {
-            System.out.println("No Field clicked.");
-       }
+    	if(yourTurn) {
+	        try {
+	        	   System.out.print(((Field) evt.getPickResult().getIntersectedNode()).getYCord() + " ");
+	            System.out.print(((Field) evt.getPickResult().getIntersectedNode()).getXCord() + " ");
+	            System.out.println(((Field) evt.getPickResult().getIntersectedNode()).getColor());
+	            Field f= (Field) evt.getPickResult().getIntersectedNode();
+	            if (board.isPossible(f)) {
+	                board.changeFieldsColor(f, board.selected.getFieldColor());
+	                board.changeFieldsColor(board.selected, FieldsColor.NO_PLAYER);
+	                board.flushPossible();
+	                evt.consume();
+	                //text.setText("Turn player number "+(client.getId()+2)%6);
+	                client.sendMessage("MOVE "+board.selected.getYCord()+" "+board.selected.getXCord()+" "+f.getYCord()+" "+f.getXCord()+" "+client.getId());
+	                String ss="MOVE "+board.selected.getYCord()+" "+board.selected.getXCord()+" "+f.getYCord()+" "+f.getXCord();
+	                System.out.println(ss);
+	            }
+	            else if(f.getFieldColor()==FieldsColor.values()[client.getId()+1]){
+	                board.flushPossible();
+	                board.selected = ((Field) evt.getPickResult().getIntersectedNode());
+	                board.showPossbileMoves(board.selected);
+	            }
+	            else {
+	            	board.flushPossible();
+	            }
+	
+	        } catch (NullPointerException exc) {
+	            System.out.println("No Field clicked.");
+	        }
+	
+	       catch (Exception exc) {
+	            System.out.println("No Field clicked.");
+	       }	   	
+    	}
     });
     
     for (int y = 0; y < board.HEIGHT; ++y) {
@@ -121,5 +126,31 @@ public class GameWind {
     game.setScene(s);
     game.show();
 	}
-
+	
+	
+	public void run() {
+		
+		while(true) {
+			
+			//sprawdz kto sie rusza
+			Communicator queue = client.getMessage();
+			Communicator move;
+			
+			if( queue.getArg(0) == client.getId() ) {
+				text.setText("Your turn");
+				yourTurn=true;
+				//wykonaj ruch
+			}
+			else {
+				text.setText("other player turn");
+				yourTurn=false;
+				//czekaj na ruch gracza
+				move = client.getMessage();
+				
+				
+				board.changeFieldsColor(board.getNode(move.getArg(2), move.getArg(3)), board.getNode(move.getArg(0), move.getArg(1)).getFieldColor());
+				board.changeFieldsColor(board.getNode(move.getArg(0), move.getArg(1)), FieldsColor.NO_PLAYER);
+			}
+		}
+	}
 }
