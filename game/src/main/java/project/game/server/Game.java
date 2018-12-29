@@ -2,12 +2,9 @@ package project.game.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 
-import project.game.board.Board;
 
 /* TODO:
  * watek gry, tu sie dzieje
@@ -22,8 +19,8 @@ public class Game extends Thread {
 	
 	private ServerSocket serverSocket;
 	private ArrayList<Player> players;
-	private int playersNo, botsNo;
-    int[][] gameBoard={
+	private int playersNo, botsNo;    
+	private final int [][]boardPattern={
 			{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 
 			{-1,-1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1},
@@ -62,45 +59,7 @@ public class Game extends Thread {
 
 			{-1,-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
 	};
-	int [][]boardPattern={
-			{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-
-			{-1,-1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1},
-
-			{-1,-1, -1, -1, -1, -1, 1, 1, -1, -1, -1, -1, -1, -1, -1},
-
-			{-1,-1, -1, -1, -1, -1, 1, 1, 1, -1, -1, -1, -1, -1, -1},
-
-			{-1,-1, -1, -1, -1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1},
-
-			{-1,6, 6, 6, 6,  0,  0,  0,  0,  0, 2, 2, 2, 2, -1},
-
-			{-1,6, 6, 6,  0,  0,  0,  0,  0,  0, 2, 2, 2, -1, -1},
-
-			{-1,-1, 6, 6,  0,  0,  0,  0,  0,  0,  0, 2, 2, -1, -1},
-
-			{-1,-1, 6,  0,  0,  0,  0,  0,  0,  0,  0, 2, -1, -1, -1},
-
-			{-1,-1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1, -1},
-
-			{-1,-1, 5,  0,  0,  0,  0,  0,  0,  0,  0, 3, -1, -1, -1},
-
-			{-1,-1, 5, 5,  0,  0,  0,  0,  0,  0,  0, 3, 3, -1, -1},
-
-			{-1,5, 5, 5,  0,  0,  0,  0,  0,  0, 3, 3, 3, -1, -1},
-
-			{-1,5, 5, 5, 5,  0,  0,  0,  0,  0, 3, 3, 3, 3, -1},
-
-			{-1,-1, -1, -1, -1, 4, 4, 4, 4, -1, -1, -1, -1, -1, -1},
-
-			{-1,-1, -1, -1, -1, -1, 4, 4, 4, -1, -1, -1, -1, -1, -1},
-
-			{-1,-1, -1, -1, -1, -1, 4, 4, -1, -1, -1, -1, -1, -1, -1},
-
-			{-1,-1, -1, -1, -1, -1, -1, 4, -1, -1, -1, -1, -1, -1, -1},
-
-			{-1,-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
-	};;
+	private int[][] gameBoard = new int[boardPattern.length][boardPattern[0].length];
 	
 	
 	Game(ServerSocket serverSocket, Player host, int playersNo, int botsNo) {
@@ -109,6 +68,11 @@ public class Game extends Thread {
 		this.players.add(host);
 		this.playersNo = playersNo;
 		this.botsNo = botsNo;
+		
+		//kopiujemy tablice
+		for(int i=0 ; i<gameBoard.length ; i++) {
+			gameBoard[i] = (int[])boardPattern[i].clone();
+		}
 	}
 	
 	
@@ -142,44 +106,20 @@ public class Game extends Thread {
 				Communicator com = Communicator.fromString(move);
 				move(com.getArg(0), com.getArg(1), com.getArg(2), com.getArg(3));
 			}
+
 			
-			
-			boolean b=isPlayerWon(playerSequence.get(i));
-			
-			if(b) {
-				System.out.println("NO MORDO WYGRAŁEŚ"+players.get(playerSequence.get(i)).getId());
-			}/*
+			if(isPlayerWon(playerSequence.get(i))) {
+				sendMessageToPlayers("WON", -1);
+				playerSequence.remove(i);
+			}
 			else {
 				sendMessageToPlayers("NOTWON", -1);
-			}*/
-			for(int j=0 ; j<gameBoard.length ; j++) {
-				for(int k=0 ; k<gameBoard[0].length ; k++) {
-					if(gameBoard[j][k]<0)
-						System.out.print(gameBoard[j][k] + " ");
-					else 
-						System.out.print(gameBoard[j][k] + "  ");	
-				}
-				System.out.println();
-			}
-			for(int j=0 ; j<gameBoard.length ; j++) {
-				for(int k=0 ; k<gameBoard[0].length ; k++) {
-					if(boardPattern[j][k]<0)
-						System.out.print(boardPattern[j][k] + " ");
-					else 
-						System.out.print(boardPattern[j][k] + "  ");	
-				}
-				System.out.println();
-			}
-			System.out.println(playerSequence.get(i));
-			System.out.println(players.get(playerSequence.get(i)).getIdTriangle());
-
+			}			
 
 			i++;
 			i=i%playerSequence.size();
 		}
 	}
-	
-	
 	
 	
 	private void waitForPlayers() {
@@ -242,11 +182,12 @@ public class Game extends Thread {
 		for(int j=0 ; j<gameBoard.length ; j++) {
 			for(int k=0 ; k<gameBoard[0].length ; k++) {
 				if(boardPattern[j][k]==oppN) {
-						if(gameBoard[j][k]==pN) {
-							continue;}
-						else {
-							return false;
-						}
+					if(gameBoard[j][k]==pN) {
+						continue;
+					}
+					else {
+						return false;
+					}
 				}
 			}
 		}

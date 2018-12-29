@@ -56,6 +56,8 @@ public class Player {
 	public void sendMessage(String x) {
 		write(x);
 	}
+	
+	
 	public void setIdTriangle(int numP) {
 		switch(numP) {
 		case 2:
@@ -82,6 +84,8 @@ public class Player {
 			break;
 		}
 	}
+	
+	
 	public int getIdTriangle() {
 		return idtri;
 	}

@@ -78,7 +78,7 @@ public class GameWind extends Thread{
 	        	System.out.print(((Field) evt.getPickResult().getIntersectedNode()).getYCord() + " ");
 	            System.out.print(((Field) evt.getPickResult().getIntersectedNode()).getXCord() + " ");
 	            System.out.println(((Field) evt.getPickResult().getIntersectedNode()).getColor());
-	            Field f= (Field) evt.getPickResult().getIntersectedNode();
+	            Field f= (Field) evt.getPickResult().getIntersectedNode();	   
 	            if (board.isPossible(f)) {
 	                board.changeFieldsColor(f, board.selected.getFieldColor());
 	                board.changeFieldsColor(board.selected, FieldsColor.NO_PLAYER);
@@ -140,9 +140,13 @@ public class GameWind extends Thread{
 				//czekaj na ruch gracza
 				move = client.getMessage();
 				
-				
 				board.changeFieldsColor(board.getNode(move.getArg(2), move.getArg(3)), board.getNode(move.getArg(0), move.getArg(1)).getFieldColor());
 				board.changeFieldsColor(board.getNode(move.getArg(0), move.getArg(1)), FieldsColor.NO_PLAYER);
+			}
+			
+			if(client.read().equals("WON")) {
+				System.out.println("wygral gracz numer " + queue.getArg(0));
+				//if client won do sth
 			}
 		}
 	}
