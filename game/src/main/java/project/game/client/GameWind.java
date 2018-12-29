@@ -37,6 +37,7 @@ public class GameWind extends Thread{
 	GameWind(int num, int numb, Client client){
 		
 	this.client = client;
+	client.setIdGame(num);
 	final int DISPLAY_WIDTH = 500, DISPLAY_HEIGHT = 500;
     final double RADIUS = 13.0;
 
@@ -57,7 +58,7 @@ public class GameWind extends Thread{
     xd.setCenterShape(true);
     Circle o=new Circle();
     o.setRadius(10);
-    o.setFill(Paint.valueOf(FieldsColor.values()[client.getId()+1].getColor()));
+    o.setFill(Paint.valueOf(FieldsColor.values()[client.getIdGame()].getColor()));
     o.setStroke(Paint.valueOf("BLACK"));
     name.setBackground(Background.EMPTY);
     name.setBorder(Border.EMPTY);
@@ -73,10 +74,6 @@ public class GameWind extends Thread{
     root.getChildren().add(texts);
     
     board =  Board.initialize(num);
-    //TODO:enum dla communicatora ktory bedzie posiadal nazwy sygnalow Turn, Move, Win, Quit i w communicatorze 
-    //w zaleznosci od tego 1szego wyrazu beda  te argumenty poszczegolnie inaczej parsowane
-    
-    
     
     s.addEventFilter(MouseEvent.MOUSE_CLICKED, evt -> {
     	if(yourTurn) {
@@ -95,7 +92,7 @@ public class GameWind extends Thread{
 	                String ss="MOVE "+board.selected.getYCord()+" "+board.selected.getXCord()+" "+f.getYCord()+" "+f.getXCord();
 	                System.out.println(ss);
 	            }
-	            else if(f.getFieldColor()==FieldsColor.values()[client.getId()+1]){
+	            else if(f.getFieldColor()==FieldsColor.values()[client.getIdGame()]){
 	                board.flushPossible();
 	                board.selected = ((Field) evt.getPickResult().getIntersectedNode());
 	                board.showPossbileMoves(board.selected);

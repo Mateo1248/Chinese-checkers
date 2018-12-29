@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+import project.game.board.Board;
+
 /* TODO:
  * watek gry, tu sie dzieje
  * tworzymy plansze
@@ -21,8 +23,46 @@ public class Game extends Thread{
 	private ServerSocket serverSocket;
 	private ArrayList<Player> players;
 	private int playersNo, botsNo;
-	
-	
+	final int[][] board1={
+			{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, 1, 1, -1, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, 1, 1, 1, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1},
+
+			{-1,6, 6, 6, 6,  0,  0,  0,  0,  0, 2, 2, 2, 2, -1},
+
+			{-1,6, 6, 6,  0,  0,  0,  0,  0,  0, 2, 2, 2, -1, -1},
+
+			{-1,-1, 6, 6,  0,  0,  0,  0,  0,  0,  0, 2, 2, -1, -1},
+
+			{-1,-1, 6,  0,  0,  0,  0,  0,  0,  0,  0, 2, -1, -1, -1},
+
+			{-1,-1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1, -1},
+
+			{-1,-1, 5,  0,  0,  0,  0,  0,  0,  0,  0, 3, -1, -1, -1},
+
+			{-1,-1, 5, 5,  0,  0,  0,  0,  0,  0,  0, 3, 3, -1, -1},
+
+			{-1,5, 5, 5,  0,  0,  0,  0,  0,  0, 3, 3, 3, -1, -1},
+
+			{-1,5, 5, 5, 5,  0,  0,  0,  0,  0, 3, 3, 3, 3, -1},
+
+			{-1,-1, -1, -1, -1, 4, 4, 4, 4, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, 4, 4, 4, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, 4, 4, -1, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, -1, 4, -1, -1, -1, -1, -1, -1, -1},
+
+			{-1,-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
+};
+	int[][]tempboard=board1;
 	Game(ServerSocket serverSocket, Player host, int playersNo, int botsNo) {
 		this.serverSocket = serverSocket;
 		players = new ArrayList<Player>();
@@ -107,4 +147,5 @@ public class Game extends Thread{
 	private String getMessageFromPlayer(int id) {
 		return players.get(id).read();
 	}
+	
  }
