@@ -23,7 +23,7 @@ public class Game extends Thread {
 	private ServerSocket serverSocket;
 	private ArrayList<Player> players;
 	private int playersNo, botsNo;
-	final int[][] board1={
+	final int[][] boardPattern={
 			{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 
 			{-1,-1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1},
@@ -61,8 +61,10 @@ public class Game extends Thread {
 			{-1,-1, -1, -1, -1, -1, -1, 4, -1, -1, -1, -1, -1, -1, -1},
 
 			{-1,-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
-};
-	int[][]tempboard=board1;
+	};
+	int [][]gameBoard=boardPattern;
+	
+	
 	Game(ServerSocket serverSocket, Player host, int playersNo, int botsNo) {
 		this.serverSocket = serverSocket;
 		players = new ArrayList<Player>();
@@ -86,24 +88,17 @@ public class Game extends Thread {
 		//petla gry
 		while(true) {
 			
-			//wiadomosc czyja kolej
+			//wyslij wiadomosc czyja kolej
 			sendMessageToPlayers("TURN " + playerSequence.get(i), -1);
 			
-			//sprawdz czy gracz jest botem jesli tak to wykonaj ruch jako bot i wyslij wiadomosc do graczy 
-			/*if(playerSequence.get(i) >= players.size()) {
-				int []coordinate = botMove(playerSequence.get(i));
-				sendMessageToPlayers("MOVE " + coordinate[0] + " " + coordinate[1] + " " + coordinate[2] + " " + coordinate[3]);
+			if(playerSequence.get(i) >= players.size()) {
+				//bot robi ruch
+				
 			}
-			//jesli nie to czekaj az gracz wykona ruch potem rozeslij jego ruch do innych graczy
-			else {*/
-			sendMessageToPlayers(getMessageFromPlayer(playerSequence.get(i)), playerSequence.get(i));
-			
-			
-			//sprawdz czy gracz ktory mial aktualny ruch wygral
-			//jesli tak to  usuwa go z player sequence 
-			
-			
-			
+			else {
+				//czekaj na ruch gracza i wyslij do innych
+				sendMessageToPlayers(getMessageFromPlayer(playerSequence.get(i)), playerSequence.get(i));
+			}
 			i++;
 			i=i%playerSequence.size();
 		}
@@ -152,4 +147,9 @@ public class Game extends Thread {
 		return players.get(id).read();
 	}
 	
+	
+	private void move(int x1, int y1, int x2, int y2) {
+		gameBoard[x2][y2] = gameBoard[x1][y1];
+		gameBoard[x1][y1]=0;
+	}
  }
