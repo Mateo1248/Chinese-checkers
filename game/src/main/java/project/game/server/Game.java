@@ -93,7 +93,7 @@ public class Game extends Thread {
 			
 			if(playerSequence.get(i) >= players.size()) {
 				//bot robi ruch
-				
+				int []coordinates = botMakeMove();
 			}
 			else {
 				//czekaj na ruch gracza i wyslij do innych
@@ -151,5 +151,11 @@ public class Game extends Thread {
 	private void move(int x1, int y1, int x2, int y2) {
 		gameBoard[x2][y2] = gameBoard[x1][y1];
 		gameBoard[x1][y1]=0;
+	}
+	
+	private int[] botMakeMove() {
+		int []x = new int[4];
+		
+		return x;
 	}
  }
