@@ -17,6 +17,7 @@ import java.util.Random;
 
 public class Game extends Thread {
 	
+	private Server server;
 	private ServerSocket serverSocket;
 	private ArrayList<Player> players;
 	private int playersNo, botsNo;    
@@ -62,12 +63,13 @@ public class Game extends Thread {
 	private int[][] gameBoard = new int[boardPattern.length][boardPattern[0].length];
 	
 	
-	Game(ServerSocket serverSocket, Player host, int playersNo, int botsNo) {
+	Game(ServerSocket serverSocket, Player host, int playersNo, int botsNo, Server server) {
 		this.serverSocket = serverSocket;
 		players = new ArrayList<Player>();
 		this.players.add(host);
 		this.playersNo = playersNo;
 		this.botsNo = botsNo;
+		this.server = server;
 		
 		//kopiujemy tablice
 		for(int i=0 ; i<gameBoard.length ; i++) {
@@ -103,8 +105,10 @@ public class Game extends Thread {
 			else {
 				//czekaj na ruch gracza i wyslij do innych
 				sendMessageToPlayers( (move=getMessageFromPlayer(playerSequence.get(i))), playerSequence.get(i));
-				Communicator com = Communicator.fromString(move);
-				move(com.getArg(0), com.getArg(1), com.getArg(2), com.getArg(3));
+				if(!move.equals("SKIP")) {
+					Communicator com = Communicator.fromString(move);
+					move(com.getArg(0), com.getArg(1), com.getArg(2), com.getArg(3));
+				}
 			}
 
 			
@@ -118,12 +122,14 @@ public class Game extends Thread {
 
 			i++;
 			if(playerSequence.size()>0) {
-			i=i%playerSequence.size();
+				i=i%playerSequence.size();
 			}
 			else {
-				//Zakończ gre break; 
+				break; 
 			}
 		}
+		close();
+		server.turnOff();
 	}
 	
 	
@@ -136,6 +142,7 @@ public class Game extends Thread {
 			} 
 			catch (IOException e) { e.printStackTrace(); }
 		}
+		server.closeSocket();
 	}
 	
 	
@@ -197,5 +204,12 @@ public class Game extends Thread {
 			}
 		}
 		return true;
+	}
+	
+	
+	private void close() {
+		for(Player x : players) {
+			x.close();
+		}
 	}
  }

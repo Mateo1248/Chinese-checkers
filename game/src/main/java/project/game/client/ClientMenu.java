@@ -1,12 +1,11 @@
 package project.game.client;
 
+import java.net.SocketTimeoutException;
+
 import javafx.application.Application;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,7 +14,6 @@ import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import project.game.server.Communicator;
 
 public class ClientMenu extends Application {
 
@@ -26,13 +24,19 @@ public class ClientMenu extends Application {
 	
 	
     public static void main(String[] args){
+    	
         launch(args);
     }
 
     
     public void start(Stage primaryStage) {
     	
-    	client = new Client();
+    	try {
+			client = new Client();
+		} catch (SocketTimeoutException e) {
+			System.out.println("nie mozna sie polaczyc");
+			System.exit(-1);
+		}
     	
     	/*
     	 * jesli pierwszy klient to pokaz mu okienko i pobierz informacje
@@ -50,6 +54,9 @@ public class ClientMenu extends Application {
 	        TextField txt= new TextField("Welcome in chinese-checkers.");
 	        TextField txt2= new TextField("You are host pick players and bots number.");
 	        TextField txt3= new TextField("Game will start after.");
+	        txt.setEditable(false);
+	        txt2.setEditable(false);
+	        txt3.setEditable(false);
 	        
 	        txt.setAlignment(Pos.CENTER);
 	        txt2.setAlignment(Pos.CENTER);

@@ -89,4 +89,15 @@ public class Player {
 	public int getIdTriangle() {
 		return idtri;
 	}
+	
+	
+	public void close() {
+		try {
+			in.close();
+			out.close();
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

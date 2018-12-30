@@ -40,7 +40,7 @@ public class Server {
 	
 			int bots = Integer.parseInt( host.read() );
 			
-			Game game = new Game(serverSocket, host, players, bots);
+			Game game = new Game(serverSocket, host, players, bots, this);
 			game.start();
 			
 			while(true) {
@@ -49,14 +49,18 @@ public class Server {
 			}
 		} 
 		catch (IOException e) {	e.printStackTrace(); }
-		finally { 
-			try { serverSocket.close(); } 
-			catch (IOException e) {	e.printStackTrace(); } 
-		}
 	}
 	
 	
-	/*
+	
+	public void closeSocket() {
+		try {
+			this.serverSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	/* 
 	 * turn off server
 	 */
 	public void turnOff() {

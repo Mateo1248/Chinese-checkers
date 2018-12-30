@@ -58,7 +58,9 @@ public class GameWind extends Thread{
     Scene s = new Scene(root, DISPLAY_WIDTH, DISPLAY_HEIGHT);
     root.getChildren().add(img);
     TextField name = new TextField("Player number "+(client.getId()+1)+" Color:"); 
+    name.setEditable(false);
     text = new TextField("waiting  for players..."); 
+    text.setEditable(false);
     VBox texts = new VBox(10);
     HBox xd=new HBox();
     xd.setCenterShape(true);
@@ -161,8 +163,10 @@ public class GameWind extends Thread{
 				//czekaj na ruch gracza
 				move = client.getMessage();
 				
-				board.changeFieldsColor(board.getNode(move.getArg(2), move.getArg(3)), board.getNode(move.getArg(0), move.getArg(1)).getFieldColor());
-				board.changeFieldsColor(board.getNode(move.getArg(0), move.getArg(1)), FieldsColor.NO_PLAYER);
+				if(!move.getMessage().equals("SKIP")) {
+					board.changeFieldsColor(board.getNode(move.getArg(2), move.getArg(3)), board.getNode(move.getArg(0), move.getArg(1)).getFieldColor());
+					board.changeFieldsColor(board.getNode(move.getArg(0), move.getArg(1)), FieldsColor.NO_PLAYER);
+				}
 			}
 			
 			if(client.read().equals("WON")) {
