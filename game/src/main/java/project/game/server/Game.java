@@ -117,7 +117,12 @@ public class Game extends Thread {
 			}			
 
 			i++;
+			if(playerSequence.size()>0) {
 			i=i%playerSequence.size();
+			}
+			else {
+				//Zakończ gre break; 
+			}
 		}
 	}
 	

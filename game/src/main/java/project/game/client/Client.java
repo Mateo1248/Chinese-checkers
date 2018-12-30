@@ -64,6 +64,7 @@ public class Client {
 	public int getId() {
 		return id;
 	}
+	
 	public void setIdGame(int numP) {
 		switch(numP) {
 		case 2:

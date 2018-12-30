@@ -1,6 +1,8 @@
 package project.game.client;
 
 
+import java.util.ArrayList;
+
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
@@ -13,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import project.game.board.Board;
 import project.game.board.Field;
@@ -27,12 +30,18 @@ import project.game.server.Communicator;
 public class GameWind extends Thread{
 	
 	private Client client;
+
 	private TextField text;
 	private Board board;
 	private boolean yourTurn;
-	
+	private ArrayList<Circle> winner = new ArrayList<>();
+	private ArrayList<Text> t=new ArrayList<>();
+	private int numPP;
+	private int j;
+
+	Group root;
 	GameWind(int num, int numb, Client client){
-		
+		this.numPP= num;
 	this.client = client;
 	client.setIdGame(num);
 	final int DISPLAY_WIDTH = 500, DISPLAY_HEIGHT = 500;
@@ -40,7 +49,7 @@ public class GameWind extends Thread{
 
     Stage game= new Stage();
     
-    Group root = new Group();
+    root = new Group();
     Image image = new Image("file:src/assets/Image004.png");
     ImageView img = new ImageView();
     img.setFitHeight(DISPLAY_HEIGHT);
@@ -73,13 +82,15 @@ public class GameWind extends Thread{
     board =  Board.initialize(num);
     
     s.addEventFilter(MouseEvent.MOUSE_CLICKED, evt -> {
+    	System.out.print(evt.getSceneX() + " "+evt.getSceneY());
+
     	if(yourTurn) {
 	        try {
 	        	System.out.print(((Field) evt.getPickResult().getIntersectedNode()).getYCord() + " ");
 	            System.out.print(((Field) evt.getPickResult().getIntersectedNode()).getXCord() + " ");
 	            System.out.println(((Field) evt.getPickResult().getIntersectedNode()).getColor());
 	            Field f= (Field) evt.getPickResult().getIntersectedNode();	   
-	            if (board.isPossible(f)) {
+	            if (board.isPossible(f)/*f.getFieldColor()==FieldsColor.values()[0]*/) {
 	                board.changeFieldsColor(f, board.selected.getFieldColor());
 	                board.changeFieldsColor(board.selected, FieldsColor.NO_PLAYER);
 	                board.flushPossible();
@@ -116,6 +127,16 @@ public class GameWind extends Thread{
             root.getChildren().add(board.getNode(y, x));
         }
     }
+    
+    for(int i=0; i<=5; i++)
+    {	
+    	
+    	winner.add(new Circle(10));
+		t.add(new Text(Integer.toString((i+1))));
+    	root.getChildren().add(winner.get(i));
+		root.getChildren().add(t.get(i));
+    }
+    
     game.setScene(s);
     game.show();
 	}
@@ -146,8 +167,78 @@ public class GameWind extends Thread{
 			
 			if(client.read().equals("WON")) {
 				System.out.println("wygral gracz numer " + queue.getArg(0));
+				
+				int xd= setIdClientWon(numPP,queue.getArg(0));
+				winner.get(j).setLayoutX(getWinnerX(xd)-5);
+				winner.get(j).setLayoutY(getWinnerY(xd)-5);
+				t.get(j).setX(getWinnerX(xd));
+				t.get(j).setY(getWinnerY(xd));
+				winner.get(j).setFill(Paint.valueOf("GOLD"));
+				j++;
+
 				//if client won do sth
 			}
 		}
+	}
+	private double getWinnerX(int winner) {
+		switch (winner) {
+		case 1:
+			return 329.0;
+		case 2:
+			return 460;
+		case 3:
+			return 460;
+		case 4:
+			return 205.0;
+		case 5:
+			return 52.0;
+		case 6:
+			return 52.0;
+		}
+		return -1;
+	}
+	private double getWinnerY(int winner) {
+		switch (winner) {
+		case 1:
+			return 21.0;
+			
+		case 2:
+			return 97.0;
+		case 3:
+			return 400.0;
+		case 4:
+			return 460.0;
+		case 5:
+			return 20.0;
+		case 6:
+			return 20.0;
+		}
+		return -1;
+	}
+	public int setIdClientWon(int numP,int id) {
+		switch(numP) {
+		case 2:
+			if(id==0)
+				return 1;
+			if(id==1)
+				return 4;
+			
+		case 3:
+			return (id+1)*2;
+			
+		case 4:
+			if(id==0)
+				return 2;
+			if(id==1)
+				return 3;
+			if(id==2)
+				return 5;
+			if(id==3)
+				return 6;
+			
+		case 6:
+			return id+1;
+		}
+		return 0;
 	}
 }
