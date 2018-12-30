@@ -4,7 +4,9 @@ package project.game.client;
 import java.util.ArrayList;
 
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -40,6 +42,8 @@ public class GameWind extends Thread{
 	private int j;
 
 	Group root;
+
+	private Button skipb;
 	GameWind(int num, int numb, Client client){
 		this.numPP= num;
 	this.client = client;
@@ -70,16 +74,26 @@ public class GameWind extends Thread{
     name.setBorder(Border.EMPTY);
     text.setBackground(Background.EMPTY);
     text.setBorder(Border.EMPTY);
-    
+     skipb=new Button("Skip");
     xd.getChildren().add(name);
     xd.getChildren().add(o);
-
+    
     texts.getChildren().add(xd); 
     texts.getChildren().add(text);
-    
+    texts.getChildren().add(skipb);
+
     root.getChildren().add(texts);
     
     board =  Board.initialize(num);
+    
+    skipb.setDisable(true);
+    
+    skipb.setOnAction(e->{
+    	if(yourTurn) {
+    		client.sendMessage("SKIP");
+    		skipb.setDisable(true);
+    	}
+    });
     
     s.addEventFilter(MouseEvent.MOUSE_CLICKED, evt -> {
     	System.out.print(evt.getSceneX() + " "+evt.getSceneY());
@@ -96,6 +110,7 @@ public class GameWind extends Thread{
 	                board.flushPossible();
 	                evt.consume();
 	                client.sendMessage("MOVE "+board.selected.getYCord()+" "+board.selected.getXCord()+" "+f.getYCord()+" "+f.getXCord());
+	                skipb.setDisable(true);
 	                String ss="MOVE "+board.selected.getYCord()+" "+board.selected.getXCord()+" "+f.getYCord()+" "+f.getXCord();
 	                System.out.println(ss);
 	            }
@@ -153,6 +168,7 @@ public class GameWind extends Thread{
 			if( queue.getArg(0) == client.getId() ) {
 				text.setText("Your turn");
 				yourTurn=true;
+				skipb.setDisable(false);
 				//wykonaj ruch
 			}
 			else {
