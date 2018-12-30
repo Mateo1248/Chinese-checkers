@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import project.game.server.Communicator;
@@ -17,9 +20,11 @@ public class Client {
 	private int id;
 	private int idgame;
 	
-	Client() {
+	Client() throws SocketTimeoutException{
 		try {
-			socket = new Socket("localhost", 4444);
+			SocketAddress socadr = new InetSocketAddress("localhost", 4444);
+			socket = new Socket();
+			socket.connect(socadr, 10);
 			try {
 	        	in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 				out = new PrintWriter(this.socket.getOutputStream(), true);
@@ -29,7 +34,8 @@ public class Client {
 			//get id
 	        this.id = Integer.parseInt( read() );
 	        System.out.println("client odebrano id " + id);
-		} 
+		}
+		catch (SocketTimeoutException e) {throw new SocketTimeoutException(); }
 		catch (UnknownHostException e) { e.printStackTrace(); } 
 		catch (IOException e) { e.printStackTrace(); }
 	}
@@ -61,9 +67,12 @@ public class Client {
 	public void sendMessage(String x) {
 		write(x);
 	}
+	
+	
 	public int getId() {
 		return id;
 	}
+	
 	
 	public void setIdGame(int numP) {
 		switch(numP) {
@@ -90,7 +99,20 @@ public class Client {
 			idgame= id+1;
 		}
 	}
+	
+	
 	public int getIdGame() {
 		return idgame;
+	}
+	
+	
+	public void close() {
+		try {
+			in.close();
+			out.close();
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
