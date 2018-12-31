@@ -84,7 +84,6 @@ public class GameWind extends Thread{
     texts.getChildren().add(text);
     texts.getChildren().add(skipb);
 
-    root.getChildren().add(texts);
     
     board =  Board.initialize(num);
     
@@ -144,7 +143,8 @@ public class GameWind extends Thread{
             root.getChildren().add(board.getNode(y, x));
         }
     }
-    
+    root.getChildren().add(texts);
+
     for(int i=0; i<=5; i++)
     {	
     	
@@ -153,7 +153,16 @@ public class GameWind extends Thread{
     	root.getChildren().add(winner.get(i));
 		root.getChildren().add(t.get(i));
     }
-    
+    game.setOnCloseRequest(ex->{
+    	client.sendMessage("CLOSED"+client.getId());
+    	for (int y = 0; y < board.HEIGHT; ++y) {
+            for (int x = 0; x < board.WIDTH; ++x) {
+            if(board.getNode(y, x).getFieldColor().equals(FieldsColor.values()[client.getIdGame()])) {
+            	board.getNode(y, x).setFill(Paint.valueOf("WHITE"));
+            }
+            }
+            }
+    });
     game.setScene(s);
     game.show();
 	}
@@ -195,8 +204,6 @@ public class GameWind extends Thread{
 				t.get(j).setY(getWinnerY(xd));
 				winner.get(j).setFill(Paint.valueOf("GOLD"));
 				j++;
-
-				//if client won do sth
 			}
 		}
 	}
@@ -235,7 +242,7 @@ public class GameWind extends Thread{
 		}
 		return -1;
 	}
-	public int setIdClientWon(int numP,int id) {
+	private int setIdClientWon(int numP,int id) {
 		switch(numP) {
 		case 2:
 			if(id==0)

@@ -82,11 +82,14 @@ public class ClientMenu extends Application {
 		        PlayersNumWindow pn = new PlayersNumWindow();
 		          
 		        // new WaitWindow();
-		        primaryStage.close();
+		        if(pn.getnumP()<6&&pn.getnumP()>0&&pn.getnumB()>0&&pn.getnumB()<5) {
 		        client.write(Integer.toString(pn.getnumP()));
 		        client.write(Integer.toString(pn.getnumB()));
 		        GameWind gw = new GameWind(pn.getnumP(), pn.getnumB(), client);
 		        gw.start();
+		        primaryStage.close();
+		        }
+
 		    });
 		    but.getChildren().add(txt);
 		    but.getChildren().add(txt2);

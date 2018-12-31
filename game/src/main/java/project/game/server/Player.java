@@ -14,7 +14,7 @@ public class Player {
 	private PrintWriter out;
 	private int idtri;
 	
-	Player(Socket socket, int id) {
+	public Player(Socket socket, int id) {
 		this.socket = socket;
 		this.id = id;
 		
@@ -23,10 +23,6 @@ public class Player {
 			out = new PrintWriter(socket.getOutputStream(), true);
 		} 
 		catch (IOException e) { e.printStackTrace(); }
-		
-		/*
-		 * send id to client
-		 */
 		write(Integer.toString(id));
 		System.out.println("player wyslal id: " + id);
 	}
