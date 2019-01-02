@@ -91,7 +91,7 @@ public class Game extends Thread {
 		
 		//petla gry
 		while(true) {
-			String move;
+			String move="";
 			players.get(playerSequence.get(i)).setIdTriangle(playersNo);
 
 			//wyslij wiadomosc czyja kolej
@@ -105,10 +105,14 @@ public class Game extends Thread {
 			else {
 				//czekaj na ruch gracza i wyslij do innych
 				sendMessageToPlayers( (move=getMessageFromPlayer(playerSequence.get(i))), playerSequence.get(i));
-				if(!move.equals("SKIP")) {
+				if(move.equals("MOVE")) {
+					
 					Communicator com = Communicator.fromString(move);
+					
 					move(com.getArg(0), com.getArg(1), com.getArg(2), com.getArg(3));
+					
 				}
+				
 			}
 
 			

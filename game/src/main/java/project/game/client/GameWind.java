@@ -40,11 +40,12 @@ public class GameWind extends Thread{
 	private ArrayList<Text> t=new ArrayList<>();
 	private int numPP;
 	private int j;
-
+	private int cl=0;
+	private boolean tr=true;
 	Group root;
 
 	private Button skipb;
-	GameWind(int num, int numb, Client client){
+	GameWind(int num, int numb, Client client) throws InterruptedException{
 		this.numPP= num;
 	this.client = client;
 	client.setIdGame(num);
@@ -112,8 +113,7 @@ public class GameWind extends Thread{
 	                evt.consume();
 	                client.sendMessage("MOVE "+board.selected.getYCord()+" "+board.selected.getXCord()+" "+f.getYCord()+" "+f.getXCord());
 	                skipb.setDisable(true);
-	                String ss="MOVE "+board.selected.getYCord()+" "+board.selected.getXCord()+" "+f.getYCord()+" "+f.getXCord();
-	                System.out.println(ss);
+	               
 	            }
 	            else if(f.getFieldColor()==FieldsColor.values()[client.getIdGame()]){
 	                board.flushPossible();
@@ -154,14 +154,11 @@ public class GameWind extends Thread{
 		root.getChildren().add(t.get(i));
     }
     game.setOnCloseRequest(ex->{
-    	client.sendMessage("CLOSED"+client.getId());
-    	for (int y = 0; y < board.HEIGHT; ++y) {
-            for (int x = 0; x < board.WIDTH; ++x) {
-            if(board.getNode(y, x).getFieldColor().equals(FieldsColor.values()[client.getIdGame()])) {
-            	board.getNode(y, x).setFill(Paint.valueOf("WHITE"));
-            }
-            }
-            }
+    	
+    	client.sendMessage("CLOSED"+" "+client.getId());
+
+    	GameWind.currentThread().interrupt();
+    	game.close();
     });
     game.setScene(s);
     game.show();
@@ -171,12 +168,18 @@ public class GameWind extends Thread{
 	public void run() {
 		
 		while(true) {
+			if (Thread.currentThread().isInterrupted()) {
+				break;
+			}
 			
 			//sprawdz kto sie rusza
 			Communicator queue = client.getMessage();
-			Communicator move;
 			
-			if( queue.getArg(0) == client.getId() ) {
+			Communicator move;
+				System.out.println(queue.getMessage());
+			
+			
+			if(  queue.getArg(0) == client.getId() ) {
 				text.setText("Your turn");
 				yourTurn=true;
 				skipb.setDisable(false);
@@ -186,18 +189,40 @@ public class GameWind extends Thread{
 				text.setText("Player number " + (queue.getArg(0)+1) + " turn");
 				yourTurn=false;
 				//czekaj na ruch gracza
+				//if(closed.getMessage().equals("CLOSED")) {
 				move = client.getMessage();
-				
-				if(!move.getMessage().equals("SKIP")) {
+				//}
+				//else {
+				//	move=closed;
+				//	}
+				System.out.println(move.getMessage());
+
+				if(move.getMessage().equals("MOVE")) {
 					board.changeFieldsColor(board.getNode(move.getArg(2), move.getArg(3)), board.getNode(move.getArg(0), move.getArg(1)).getFieldColor());
 					board.changeFieldsColor(board.getNode(move.getArg(0), move.getArg(1)), FieldsColor.NO_PLAYER);
 				}
+				else if(move.getMessage().equals("CLOSED")) {
+					
+				for (int y = 0; y < board.HEIGHT; ++y) {
+		            for (int x = 0; x < board.WIDTH; ++x) {
+		            if(board.getNode(y, x).getFieldColor().equals(FieldsColor.values()[getIdClientWon(numPP,move.getArg(0))])) {
+		            	board.getNode(y, x).setFill(Paint.valueOf("WHITE"));
+				
+		            		}
+		            	}
+		            }
 			}
+				
+			
+			}
+			
+
+			
 			
 			if(client.read().equals("WON")) {
 				System.out.println("wygral gracz numer " + queue.getArg(0));
 				
-				int xd= setIdClientWon(numPP,queue.getArg(0));
+				int xd= getIdClientWon(numPP,queue.getArg(0));
 				winner.get(j).setLayoutX(getWinnerX(xd)-5);
 				winner.get(j).setLayoutY(getWinnerY(xd)-5);
 				t.get(j).setX(getWinnerX(xd));
@@ -205,6 +230,7 @@ public class GameWind extends Thread{
 				winner.get(j).setFill(Paint.valueOf("GOLD"));
 				j++;
 			}
+			
 		}
 	}
 	private double getWinnerX(int winner) {
@@ -242,7 +268,7 @@ public class GameWind extends Thread{
 		}
 		return -1;
 	}
-	private int setIdClientWon(int numP,int id) {
+	private int getIdClientWon(int numP,int id) {
 		switch(numP) {
 		case 2:
 			if(id==0)

@@ -82,11 +82,18 @@ public class ClientMenu extends Application {
 		        PlayersNumWindow pn = new PlayersNumWindow();
 		          
 		        // new WaitWindow();
-		        if(pn.getnumP()<6&&pn.getnumP()>0&&pn.getnumB()>0&&pn.getnumB()<5) {
+		        if(pn.getnumP()<=6&&pn.getnumP()>0&&pn.getnumB()>=0&&pn.getnumB()<=5) {
 		        client.write(Integer.toString(pn.getnumP()));
 		        client.write(Integer.toString(pn.getnumB()));
-		        GameWind gw = new GameWind(pn.getnumP(), pn.getnumB(), client);
-		        gw.start();
+		        GameWind gw;
+				try {
+					gw = new GameWind(pn.getnumP(), pn.getnumB(), client);
+					 gw.start();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		       
 		        primaryStage.close();
 		        }
 
@@ -110,8 +117,15 @@ public class ClientMenu extends Application {
     	 * jesli nie pobierz info od servera wlacz okno gry i czekaj na jej rozpoczecie
     	 */
     	else {
-    		GameWind gw = new GameWind(Integer.parseInt(client.read()), Integer.parseInt(client.read()), client);
-    		gw.start();
+    		GameWind gw;
+			try {
+				gw = new GameWind(Integer.parseInt(client.read()), Integer.parseInt(client.read()), client);    		
+				gw.start();
+
+			} catch (NumberFormatException | InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     	}
     }
     
