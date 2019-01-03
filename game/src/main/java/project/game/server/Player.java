@@ -33,8 +33,11 @@ public class Player {
 	
 	
 	public String read() {
-		try { return in.readLine(); } 
-		catch (IOException e) {	e.printStackTrace(); return null; }
+		try {
+			return in.readLine();
+		} catch (IOException e) {
+			return null;
+		}
 	}	
 	
 	
@@ -43,7 +46,7 @@ public class Player {
 	}
 	
 	
-	public Communicator getMessage() {
+	public Communicator getMessage() throws IOException {
 		Communicator x = Communicator.fromString(read());
 		return x;		
 	}
@@ -80,6 +83,7 @@ public class Player {
 			break;
 		}
 	}
+	
 	
 	
 	public int getIdTriangle() {

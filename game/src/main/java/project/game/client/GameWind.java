@@ -41,6 +41,7 @@ public class GameWind extends Thread{
 	private int numPP;
 	private int j;
 	private int cl=0;
+	private boolean isRunning=true;
 	private boolean tr=true;
 	Group root;
 
@@ -154,30 +155,47 @@ public class GameWind extends Thread{
 		root.getChildren().add(t.get(i));
     }
     game.setOnCloseRequest(ex->{
-    	
-    	client.sendMessage("CLOSED"+" "+client.getId());
-
-    	GameWind.currentThread().interrupt();
+    	if(yourTurn) {
+    		client.sendMessage("EXIT");
+    	}
     	game.close();
+    	isRunning=false;
     });
     game.setScene(s);
     game.show();
 	}
 	
 	
-	public void run() {
+public void run() {
 		
 		while(true) {
-			if (Thread.currentThread().isInterrupted()) {
+			if (!isRunning) {
 				break;
 			}
+			
+			
+			client.sendMessage("ACTIVE");
+			
+			String temp=client.read();
+			//usun pola nieaktywnych graczy
+				Communicator c = Communicator.fromString(temp);
+			if(c.getMessage().equals("CLOSED")) {
+				for (int y = 0; y < board.HEIGHT; ++y) {
+			        for (int x = 0; x < board.WIDTH; ++x) {
+			           	if(board.getNode(y, x).getFieldColor().equals(FieldsColor.values()[getIdClientWon(numPP,c.getArg(0))])) {
+			           		board.getNode(y, x).setFill(Paint.valueOf("WHITE"));
+			           	}
+			        }
+			    }
+				skipb.setDisable(true);
+				continue;
+			}
+			
 			
 			//sprawdz kto sie rusza
 			Communicator queue = client.getMessage();
 			
-			Communicator move;
-				System.out.println(queue.getMessage());
-			
+			Communicator message;			
 			
 			if(  queue.getArg(0) == client.getId() ) {
 				text.setText("Your turn");
@@ -188,37 +206,17 @@ public class GameWind extends Thread{
 			else {
 				text.setText("Player number " + (queue.getArg(0)+1) + " turn");
 				yourTurn=false;
-				//czekaj na ruch gracza
-				//if(closed.getMessage().equals("CLOSED")) {
-				move = client.getMessage();
-				//}
-				//else {
-				//	move=closed;
-				//	}
-				System.out.println(move.getMessage());
+				
+				message = client.getMessage();
+				
 
-				if(move.getMessage().equals("MOVE")) {
-					board.changeFieldsColor(board.getNode(move.getArg(2), move.getArg(3)), board.getNode(move.getArg(0), move.getArg(1)).getFieldColor());
-					board.changeFieldsColor(board.getNode(move.getArg(0), move.getArg(1)), FieldsColor.NO_PLAYER);
-				}
-				else if(move.getMessage().equals("CLOSED")) {
-					
-				for (int y = 0; y < board.HEIGHT; ++y) {
-		            for (int x = 0; x < board.WIDTH; ++x) {
-		            if(board.getNode(y, x).getFieldColor().equals(FieldsColor.values()[getIdClientWon(numPP,move.getArg(0))])) {
-		            	board.getNode(y, x).setFill(Paint.valueOf("WHITE"));
-				
-		            		}
-		            	}
-		            }
-			}
-				
-			
+				if(message.getMessage().equals("MOVE")) {
+					board.changeFieldsColor(board.getNode(message.getArg(2), message.getArg(3)), board.getNode(message.getArg(0), message.getArg(1)).getFieldColor());
+					board.changeFieldsColor(board.getNode(message.getArg(0), message.getArg(1)), FieldsColor.NO_PLAYER);
+				}	
 			}
 			
 
-			
-			
 			if(client.read().equals("WON")) {
 				System.out.println("wygral gracz numer " + queue.getArg(0));
 				
@@ -232,7 +230,10 @@ public class GameWind extends Thread{
 			}
 			
 		}
+		client.close();
 	}
+	
+	
 	private double getWinnerX(int winner) {
 		switch (winner) {
 		case 1:
@@ -250,6 +251,8 @@ public class GameWind extends Thread{
 		}
 		return -1;
 	}
+	
+	
 	private double getWinnerY(int winner) {
 		switch (winner) {
 		case 1:
@@ -268,6 +271,8 @@ public class GameWind extends Thread{
 		}
 		return -1;
 	}
+	
+	
 	private int getIdClientWon(int numP,int id) {
 		switch(numP) {
 		case 2:

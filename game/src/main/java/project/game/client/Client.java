@@ -20,11 +20,11 @@ public class Client {
 	private int id;
 	private int idgame;
 	
-	Client() throws SocketTimeoutException{
+	public Client() throws SocketTimeoutException{
 		try {
 			SocketAddress socadr = new InetSocketAddress("localhost", 4444);
 			socket = new Socket();
-			socket.connect(socadr, 10);
+			socket.connect(socadr, 1000);
 			try {
 	        	in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 				out = new PrintWriter(this.socket.getOutputStream(), true);
@@ -108,9 +108,9 @@ public class Client {
 	
 	public void close() {
 		try {
+			socket.close();
 			in.close();
 			out.close();
-			socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -5,6 +5,8 @@ import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState;
+
 
 /* TODO:
  * watek gry, tu sie dzieje
@@ -20,6 +22,7 @@ public class Game extends Thread {
 	private Server server;
 	private ServerSocket serverSocket;
 	private ArrayList<Player> players;
+	private ArrayList<Bot> bots;
 	private int playersNo, botsNo;    
 	private final int [][]boardPattern={
 			{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
@@ -78,55 +81,74 @@ public class Game extends Thread {
 	}
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public void run() {
+		
+		//polacz sie z botami
+		createBots();
+		
 		
 		//poczekaj na wymagana liczbe graczy
 		waitForPlayers();
-		
-		//ustal losowa kolejnosc graczy
-		ArrayList<Integer> playerSequence = randomPlayerSequence();
 		
 		//iterator
 		int i=0;
 		
 		//petla gry
 		while(true) {
-			String move="";
-			players.get(playerSequence.get(i)).setIdTriangle(playersNo);
-
-			//wyslij wiadomosc czyja kolej
-			sendMessageToPlayers("TURN " + playerSequence.get(i), -1);
 			
-			if(playerSequence.get(i) >= players.size()) {
-				//bot robi ruch
-				int []coordinates = botMakeMove();
-				move(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
+			if(checkStateOfPlayers())
+				continue;
+			
+			if(players.size()>0) {
+				i%=players.size();
 			}
 			else {
-				//czekaj na ruch gracza i wyslij do innych
-				sendMessageToPlayers( (move=getMessageFromPlayer(playerSequence.get(i))), playerSequence.get(i));
-				if(move.equals("MOVE")) {
-					
-					Communicator com = Communicator.fromString(move);
-					
-					move(com.getArg(0), com.getArg(1), com.getArg(2), com.getArg(3));
-					
-				}
-				
+				break; 
 			}
-
 			
-			if(isPlayerWon(playerSequence.get(i))) {
+			String move="";
+
+			//wyslij wiadomosc czyja kolej
+			sendMessageToPlayers("TURN " + players.get(i).getId(), -1);
+			
+			
+			//czekaj na ruch gracza i wyslij do innych
+			
+			try {
+				sendMessageToPlayers( (move=getMessageFromPlayer(players.get(i))), players.get(i).getId());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if(move.equals("MOVE")) {
+				Communicator com = Communicator.fromString(move);
+				move(com.getArg(0), com.getArg(1), com.getArg(2), com.getArg(3));
+			}
+				
+		
+			if(isPlayerWon(players.get(i).getId())) {
 				sendMessageToPlayers("WON", -1);
-				playerSequence.remove(i);
+				players.get(i).close();
+				players.remove(players.get(i));
+				if(players.size()>0) {
+					i%=players.size();
+				}
 			}
 			else {
 				sendMessageToPlayers("NOTWON", -1);
 			}			
 
 			i++;
-			if(playerSequence.size()>0) {
-				i=i%playerSequence.size();
+			if(players.size()>0) {
+				i%=players.size();
 			}
 			else {
 				break; 
@@ -137,32 +159,50 @@ public class Game extends Thread {
 	}
 	
 	
+	private void createBots() {
+		for(int i=1 ; i< botsNo+1 ; i++) {
+			try {
+				bots.add(new Bot());
+				players.add(new Player(serverSocket.accept(), i));
+				players.get(i).setIdTriangle(playersNo);
+				players.get(i).write(Integer.toString(playersNo));
+				players.get(i).write(Integer.toString(botsNo));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	private boolean checkStateOfPlayers() {
+		boolean checked=false;
+		
+		for(int i=0 ; i<players.size() ; i++) {
+			if(players.get(i).read()==null && !checked) {
+				checked=true;
+				int id = players.get(i).getId();
+				players.get(i).close();
+				players.remove(i);
+				sendMessageToPlayers("CLOSED " + id, -1);
+				return true;
+			}
+		}
+		sendMessageToPlayers("ALLACTIVE", -1);
+		return false;
+	}
+	
+	
 	private void waitForPlayers() {
-		for(int i=1 ; i<playersNo-botsNo ; i++) {
+		for(int i=players.size() ; i<playersNo-botsNo ; i++) {
 			try { 
 				players.add( new Player(serverSocket.accept(), i)); 
+				players.get(i).setIdTriangle(playersNo);
 				players.get(i).write(Integer.toString(playersNo));
 				players.get(i).write(Integer.toString(botsNo));
 			} 
 			catch (IOException e) { e.printStackTrace(); }
 		}
 		server.closeSocket();
-	}
-	
-	
-	private ArrayList<Integer> randomPlayerSequence() {
-		ArrayList<Integer> temp = new ArrayList<Integer>();
-		Random rnd = new Random();
-		
-		int i = rnd.nextInt(playersNo);
-		
-		for(int j=i ; j<playersNo ; j++) {
-			temp.add(j);
-		}
-		for(int j=0 ; j<i ; j++) {
-			temp.add(j);
-		}
-		return temp;
 	}
 	
 	
@@ -174,8 +214,8 @@ public class Game extends Thread {
 	} 
 	
 	
-	private String getMessageFromPlayer(int id) {
-		return players.get(id).read();
+	private String getMessageFromPlayer(Player p) throws IOException {
+		return p.read();
 	}
 	
 	
@@ -185,15 +225,7 @@ public class Game extends Thread {
 	}
 	
 	
-	private int[] botMakeMove() {
-		int []x = new int[4];
-		
-		return x;
-	}
-	
-	
-	private boolean isPlayerWon(int id) {
-		int pN=players.get(id).getIdTriangle();
+	private boolean isPlayerWon(int pN) {
 		int oppN=(pN+2)%6+1;
 		for(int j=0 ; j<gameBoard.length ; j++) {
 			for(int k=0 ; k<gameBoard[0].length ; k++) {
