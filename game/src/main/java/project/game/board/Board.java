@@ -8,6 +8,12 @@ import project.game.board.FieldsColor;
 
 
 
+/**
+ * @author danieldrapala
+ *
+ */
+
+
 public  class Board {
 	public int[][] STAR_REPRESENTATION=
 		 {
@@ -55,6 +61,10 @@ public  class Board {
 	public Field selected;
 	public ArrayList<Field> highlighted;
 
+	    /**
+	     * @param num
+	     * @return Board initialized depends on number of players
+	     */
 	    public static  Board initialize(int num){
 	    	switch(num){
 	    	case 2:
@@ -70,16 +80,30 @@ public  class Board {
 	    }
 	    
 
+	    /**
+	     * @param y
+	     * @param x
+	     * @return Node in Board with (y,x) position
+	     */
 	    public Field getNode(int y, int x) {
 	        if (y >= HEIGHT || y < 0 || x >= WIDTH || x < 0)
 	            throw new NullPointerException();
 	        return board[y][x];
 	    }
 
+	    /**
+	     * @param field
+	     * @return Iffieldhiglighted==true
+	     */
 	    public boolean isPossible(Field field) {
 	        return highlighted.contains(field);
 	    }
 
+		/**
+		 * @param field
+		 * @param fieldColor
+		 * changing fields color
+		 */
 		public void changeFieldsColor(Field field, FieldsColor fieldColor) {
 			  if (field.getXCord() != -1) {
 		            this.getNode(field.getYCord(), field.getXCord()).setColor(fieldColor);
@@ -87,6 +111,9 @@ public  class Board {
 		        }
 		}
 		
+		/**
+		 * 
+		 */
 		public void flushPossible() {
 			for (Field field : highlighted) {
 	            field.setStroke(Paint.valueOf("BLACK"));
@@ -94,6 +121,11 @@ public  class Board {
 	        }
 	        highlighted.clear();			
 		}
+		
+		/**
+		 * @param selected2
+		 * Possible moves
+		 */
 		public void showPossbileMoves(Field selected2) {
 	        if (!selected2.getColor().equals("WHITE")) {
 	            int ySelected = selected2.getYCord();
@@ -115,6 +147,10 @@ public  class Board {
 	        }
 
 		}
+		/**
+		 * @param field
+		 * 
+		 */
 		private void findAHop(Field field) {
 
 	        int y = field.getYCord(), x = field.getXCord();
@@ -202,7 +238,11 @@ public  class Board {
 	    }
 
 
-	   private void highlightField(Field node) {
+	 /**
+	 * @param node
+	 * 
+	 */
+		private void highlightField(Field node) {
 			if (node.getXCord() != -1 && node.getColor().equals("WHITE") && !(highlighted.contains(node))) {
 	            highlighted.add(node);
 	            this.getNode(node.getYCord(), node.getXCord()).setStroke(Paint.valueOf(FieldsColor.LEGAL.getColor()));

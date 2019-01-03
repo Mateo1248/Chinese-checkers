@@ -17,17 +17,21 @@ import javafx.stage.Stage;
 
 public class ClientMenu extends Application {
 
-	/*
-	 * za pomoca obiektu klienta bedziemy komunikowac sie z serverem
-	 */
+	
 	Client client;
 	
 	
+    /**
+     * Launching fx application
+     * @param args
+     * 
+     */
     public static void main(String[] args){
     	
         launch(args);
     }
 
+    
     
     public void start(Stage primaryStage) {
     	
@@ -113,9 +117,6 @@ public class ClientMenu extends Application {
 	        primaryStage.setScene(s);
 	        primaryStage.show();
     	}
-    	/*
-    	 * jesli nie pobierz info od servera wlacz okno gry i czekaj na jej rozpoczecie
-    	 */
     	else {
     		GameWind gw;
 			try {

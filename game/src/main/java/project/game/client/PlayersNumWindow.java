@@ -29,10 +29,16 @@ public class PlayersNumWindow {
         });
 
     }
+    /**
+     * @return number of players
+     */
     public int getnumP(){
         return num;
     }
 
+    /**
+     * @return number of Bots
+     */
     public int getnumB(){
         return numb;
     }

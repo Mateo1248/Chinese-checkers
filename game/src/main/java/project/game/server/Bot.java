@@ -6,6 +6,10 @@ import javafx.scene.paint.Paint;
 import project.game.board.FieldsColor;
 import project.game.client.Client;
 
+/**
+ * @author danieldrapala
+ * @author mateo1248
+ */
 public class Bot extends Thread {
 	
 	private Client client;
@@ -51,6 +55,9 @@ public class Bot extends Thread {
 	};
 	private int[][] gameBoard = new int[boardPattern.length][boardPattern[0].length];
 	
+	/**
+	 * constructor for Bot 
+	 */
 	Bot() {
 		try {
 			this.client = new Client();
@@ -110,6 +117,9 @@ public class Bot extends Thread {
 	}
 	
 	
+	/**
+	 * bot move thanks to this method
+	 */
 	private void makeMove() {
 		int []move = new int[4];
 		
@@ -122,12 +132,23 @@ public class Bot extends Thread {
 		client.sendMessage("MOVE " + move[0] + " " + move[1] + " " + move[2] + " " + move[3]);
 	}
 	
+	/**
+	 * updating mocked board
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * 
+	 */
 	private void updateBoard(int x1, int y1, int x2, int y2) {
 		gameBoard[x2][y2] = gameBoard[x1][y1];
 		gameBoard[x1][y1]=0;
 	}
 	
 	
+	/**
+	 * turning oFF Bot
+	 */
 	public void turnOff() {
 		isRunning=false;
 	}
