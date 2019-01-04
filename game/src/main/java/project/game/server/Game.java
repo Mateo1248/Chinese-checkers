@@ -63,7 +63,7 @@ public class Game extends Thread {
 
 			{-1,-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
 	};
-	private int[][] gameBoard = new int[boardPattern.length][boardPattern[0].length];
+	private int[][] gameBoard =new int[boardPattern.length][boardPattern[0].length];
 	
 	
 	Game(ServerSocket serverSocket, Player host, int playersNo, int botsNo, Server server) {
@@ -82,6 +82,15 @@ public class Game extends Thread {
 	}
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public void run() {
 		
 		//polacz sie z botami
@@ -97,7 +106,7 @@ public class Game extends Thread {
 		//petla gry
 		while(true) {
 			
-			if(checkStateOfPlayers())	
+			if(checkStateOfPlayers())
 				continue;
 			
 			if(players.size()>0) {
@@ -120,13 +129,11 @@ public class Game extends Thread {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			Communicator com = Communicator.fromString(move);
-			if(com.getMessage().equals("MOVE")) {
+			if(move.equals("MOVE")) {
+				Communicator com = Communicator.fromString(move);
 				move(com.getArg(0), com.getArg(1), com.getArg(2), com.getArg(3));
-				printBoards();
 			}
 				
-		
 			if(isPlayerWon(players.get(i).getIdTriangle())) {
 				sendMessageToPlayers("WON", -1);
 				players.get(i).close();
@@ -153,14 +160,13 @@ public class Game extends Thread {
 	
 	
 	private void createBots() {
-		for(int i=1 ; i<= botsNo ; i++) {
+		for(int i=1 ; i< botsNo+1 ; i++) {
 			try {
 				bots.add(new Bot());
 				players.add(new Player(serverSocket.accept(), i));
 				players.get(i).setIdTriangle(playersNo);
 				players.get(i).write(Integer.toString(playersNo));
 				players.get(i).write(Integer.toString(botsNo));
-				bots.get(i).start();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -177,7 +183,6 @@ public class Game extends Thread {
 				int id = players.get(i).getId();
 				players.get(i).close();
 				players.remove(i);
-				
 				sendMessageToPlayers("CLOSED " + id, -1);
 				return true;
 			}
@@ -235,28 +240,6 @@ public class Game extends Thread {
 			}
 		}
 		return true;
-	}
-	
-	
-	void printBoards() {
-		for(int i=0 ; i<boardPattern.length ; i++) {
-			for(int j=0 ; j<boardPattern[0].length ; j++) {
-				if(boardPattern[i][j]>=0)
-					System.out.print(" ");
-				System.out.print(boardPattern[i][j]);
-			}
-			System.out.println();
-		}
-		System.out.println();
-		System.out.println();
-		for(int i=0 ; i<gameBoard.length ; i++) {
-			for(int j=0 ; j<gameBoard[0].length ; j++) {
-				if(gameBoard[i][j]>=0)
-					System.out.print(" ");
-				System.out.print(gameBoard[i][j]);
-			}
-			System.out.println();
-		}
 	}
 	
 	

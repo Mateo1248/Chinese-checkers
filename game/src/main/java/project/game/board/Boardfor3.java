@@ -2,6 +2,10 @@ package project.game.board;
 
 import java.util.ArrayList;
 
+/**
+ * @author danieldrapala
+ *
+ */
 public class Boardfor3 extends Board {
 	public Boardfor3(){
 		 
