@@ -64,30 +64,32 @@ public class Bot extends Thread {
 	 * constructor for Bot 
 	 */
 	Bot() {
-		try {
-			this.client = new Client();
-			isRunning=true;
-			for(int i=0 ; i<gameBoard.length ; i++) {
-				gameBoard[i] = (int[])boardPattern[i].clone();
-			}
-			possiblemoves = new ArrayList<Field>();
-			rand = new Random();
-		} 
-		catch (SocketTimeoutException e) {
-			e.printStackTrace();
+		isRunning=true;
+		for(int i=0 ; i<gameBoard.length ; i++) {
+			gameBoard[i] = (int[])boardPattern[i].clone();
 		}
+		possiblemoves = new ArrayList<Field>();
+		rand = new Random();
+		
+		
 	}
 	
 	
 public void run() {
 		
+	try {
+		this.client = new Client();
+	} 
+	catch (SocketTimeoutException e) {
+		e.printStackTrace();
+	}
+	
 		goalField = getGoalField();
 		
 		while(true) {
 			if (!isRunning) {
 				break;
 			}
-			
 			
 			client.sendMessage("ACTIVE");
 			
@@ -108,6 +110,7 @@ public void run() {
 			
 			//sprawdz kto sie rusza
 			Communicator queue = client.getMessage();
+			
 			
 			Communicator message;			
 			
@@ -299,7 +302,8 @@ public void run() {
 
         try {
         	if (!(gameBoard[y][ x + 1]==0)) {
-	            if(gameBoard[y][x + 2]==0 && !possiblemoves.contains(new Field(y, x + 2))) {
+        		if(gameBoard[y][x + 2]==0)
+	            if( !possiblemoves.contains(new Field(y, x + 2))) {
 	            	possiblemoves.add(new Field(y, x + 2));
 	            	showPossibleMoves(y, x + 2);
 	            }
