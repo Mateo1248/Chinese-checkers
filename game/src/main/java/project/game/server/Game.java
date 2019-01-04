@@ -69,6 +69,7 @@ public class Game extends Thread {
 	Game(ServerSocket serverSocket, Player host, int playersNo, int botsNo, Server server) {
 		this.serverSocket = serverSocket;
 		players = new ArrayList<Player>();
+		bots = new ArrayList<Bot>();
 		this.players.add(host);
 		this.players.get(0).setIdTriangle(playersNo);
 		this.playersNo = playersNo;
@@ -163,10 +164,10 @@ public class Game extends Thread {
 		for(int i=1 ; i< botsNo+1 ; i++) {
 			try {
 				bots.add(new Bot());
+				bots.get(i-1).start();
 				players.add(new Player(serverSocket.accept(), i));
 				players.get(i).setIdTriangle(playersNo);
-				players.get(i).write(Integer.toString(playersNo));
-				players.get(i).write(Integer.toString(botsNo));
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -193,7 +194,7 @@ public class Game extends Thread {
 	
 	
 	private void waitForPlayers() {
-		for(int i=players.size() ; i<playersNo-botsNo ; i++) {
+		for(int i=players.size() ; i<playersNo ; i++) {
 			try { 
 				players.add( new Player(serverSocket.accept(), i)); 
 				players.get(i).setIdTriangle(playersNo);
@@ -243,6 +244,30 @@ public class Game extends Thread {
 	}
 	
 	
+
+	private void printBoards() {
+		for(int i=0 ; i<boardPattern.length ; i++) {
+			for(int j=0 ; j<boardPattern[0].length ; j++) {
+				if(boardPattern[i][j]>=0)
+					System.out.print(" ");
+				System.out.print(boardPattern[i][j]);
+			}
+			System.out.println();
+		}
+		System.out.println();
+		System.out.println();
+		for(int i=0 ; i<gameBoard.length ; i++) {
+			for(int j=0 ; j<gameBoard[0].length ; j++) {
+				if(gameBoard[i][j]>=0)
+					System.out.print(" ");
+				System.out.print(gameBoard[i][j]);
+			}
+			System.out.println();
+		}
+	}
+	
+	
+
 	private void close() {
 		for(Player x : players) {
 			x.close();
