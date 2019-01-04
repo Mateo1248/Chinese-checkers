@@ -163,7 +163,7 @@ public class GameWind extends Thread{
     });
     game.setScene(s);
     game.show();
-	}
+}
 	
 	
 public void run() {
@@ -178,12 +178,13 @@ public void run() {
 			
 			String temp=client.read();
 			//usun pola nieaktywnych graczy
-				Communicator c = Communicator.fromString(temp);
+			Communicator c = Communicator.fromString(temp);
 			if(c.getMessage().equals("CLOSED")) {
 				for (int y = 0; y < board.HEIGHT; ++y) {
 			        for (int x = 0; x < board.WIDTH; ++x) {
 			           	if(board.getNode(y, x).getFieldColor().equals(FieldsColor.values()[getIdClientWon(numPP,c.getArg(0))])) {
 			           		board.getNode(y, x).setFill(Paint.valueOf("WHITE"));
+			           		board.getNode(y, x).setColor(FieldsColor.NO_PLAYER);
 			           	}
 			        }
 			    }
@@ -201,12 +202,11 @@ public void run() {
 				text.setText("Your turn");
 				yourTurn=true;
 				skipb.setDisable(false);
-				//wykonaj ruch
 			}
 			else {
 				text.setText("Player number " + (queue.getArg(0)+1) + " turn");
 				yourTurn=false;
-				
+						
 				message = client.getMessage();
 				
 

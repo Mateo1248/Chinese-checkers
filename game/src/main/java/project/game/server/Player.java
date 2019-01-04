@@ -34,7 +34,9 @@ public class Player {
 	
 	public String read() {
 		try {
-			return in.readLine();
+			String read = in.readLine();
+			System.out.println(read);
+			return read;
 		} catch (IOException e) {
 			return null;
 		}
@@ -42,6 +44,7 @@ public class Player {
 	
 	
 	public void write(String message) {
+		System.out.println(message);
 		out.println( message );
 	}
 	
