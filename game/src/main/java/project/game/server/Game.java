@@ -163,7 +163,7 @@ public class Game extends Thread {
 	private void createBots() {
 		for(int i=1 ; i< botsNo+1 ; i++) {
 			try {
-				bots.add(new Bot());
+				bots.add(new Bot(playersNo));
 				bots.get(i-1).start();
 				players.add(new Player(serverSocket.accept(), i));
 				players.get(i).setIdTriangle(playersNo);

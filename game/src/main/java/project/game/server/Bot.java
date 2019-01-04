@@ -13,6 +13,7 @@ import project.game.client.Client;
 public class Bot extends Thread {
 
 	private Client client;
+	private int numofP;
 	private Random rand;
 	private Field goalField;
 	private boolean isRunning;
@@ -56,20 +57,21 @@ public class Bot extends Thread {
 			{-1,-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
 	};
 	private int[][] gameBoard = new int[boardPattern.length][boardPattern[0].length];
-	private int gameBoardH = gameBoard.length;
-	private int gameBoardL = gameBoard[0].length;
+	private int gameBoardH = boardPattern.length;
+	private int gameBoardL = boardPattern[0].length;
 	private ArrayList<Field> possiblemoves;
 	
 	/**
 	 * constructor for Bot 
 	 */
-	Bot() {
+	Bot(int numofp) {
 		isRunning=true;
-		for(int i=0 ; i<gameBoard.length ; i++) {
+		for(int i=0 ; i<boardPattern.length ; i++) {
 			gameBoard[i] = (int[])boardPattern[i].clone();
 		}
 		possiblemoves = new ArrayList<Field>();
 		rand = new Random();
+		this.numofP=numofp;
 		
 		
 	}
@@ -79,6 +81,8 @@ public void run() {
 		
 	try {
 		this.client = new Client();
+		this.client.setIdGame(numofP);
+		
 	} 
 	catch (SocketTimeoutException e) {
 		e.printStackTrace();
@@ -172,10 +176,12 @@ public void run() {
 		showPossibleMoves(field.getX(), field.getY());
 		
 		field = possiblemoves.get(rand.nextInt(possiblemoves.size()));
-		
-		updateBoard(move[0], move[1], move[2], move[3]);
-		
-		client.sendMessage("MOVE " + move[0] + " " + move[1] + " " + move[2] + " " + move[3]);
+		move[2]=field.getX();
+		move[3]=field.getY();
+		System.out.println(move[0]+" "+ move[1]+" "+ move[2]+" "+ move[3]);
+		updateBoard(move[1],move[0],move[2] , move[3] );
+		printBoards();
+		client.sendMessage("MOVE "  + move[1]+ " "+ move[0]+ " " + move[2]  + " " + move[3] );
 		possiblemoves.clear();
 	}
 	
@@ -204,9 +210,9 @@ public void run() {
 	private Field getRandomField() {
 		ArrayList<Field> botfields = new ArrayList<Field>();
 		
-		for (int y = 0 ; y < gameBoardH ; ++y) {
-	        for (int x = 0 ; x < gameBoardL ; ++x) {
-	           	if(gameBoard[x][y]==client.getIdGame()) {
+		for (int y = 0 ; y < gameBoardH ; y++) {
+	        for (int x = 0 ; x < gameBoardL ; x++) {
+	           	if(gameBoard[y][x]==client.getIdGame()) {
 	           		possiblemoves.clear();
 	           		showPossibleMoves(x,y);
 	           		if(possiblemoves.size()>0) {
@@ -248,7 +254,7 @@ public void run() {
 	    //           x						o
         
         try {
-            if (!(gameBoard[y + 1*parity][x + 1*parity]==0)) {
+            if (!(gameBoard[y + 1*parity][x + 1*parity]==0)&&!(gameBoard[y + 1*parity][x + 1*parity]==-1)) {
                 if (gameBoard[y + 2*parity][ x + 1*parity]==0 && !possiblemoves.contains(new Field(y + 2*parity, x + 1*parity))) {
                 	possiblemoves.add(new Field(y + 2*parity, x + 1*parity));
                 	showPossibleMoves(y + 2*parity, x + 1*parity);
@@ -259,7 +265,7 @@ public void run() {
         // nieparzyste   o      parzyste     x
 	        //              x	    	       o
         try {
-            if (!(gameBoard[y + (-1*parity)][ x + 1*parity]==0)) {
+            if (!(gameBoard[y + (-1*parity)][ x + 1*parity]==0)&&!(gameBoard[y+ (-1*parity)][ x + 1*parity]==-1)) {
                 if(gameBoard[y + (-2*parity)][x + 1*parity]==0 && !possiblemoves.contains(new Field(y + (-2*parity), x + 1*parity))) {
                 	possiblemoves.add(new Field(y + (-2*parity), x + 1*parity));
                 	showPossibleMoves(y + (-2*parity), x + 1*parity);
@@ -270,7 +276,7 @@ public void run() {
         // nieparzyste  x      parzyste    x
 	        //              o	    	       o
         try {
-            if (!(gameBoard[y - 1][x]==0)) {
+            if (!(gameBoard[y - 1][x]==0&&!(gameBoard[y-1][ x]==-1))) {
                 if(gameBoard[y - 2][x + (-1*parity)]==0 && !possiblemoves.contains(new Field(y - 2, x + (-1*parity)))) {
                 	possiblemoves.add(new Field(y - 2, x + (-1*parity)));
                 	showPossibleMoves(y - 2, x + (-1*parity));
@@ -280,7 +286,7 @@ public void run() {
         // nieparzyste  o      parzyste    o
 	        //              x	    	       x
         try {
-            if (!(gameBoard[y + 1][x]==0)) {
+            if (!(gameBoard[y + 1][x]==0)&&!(gameBoard[y+1][ x]==-1)) {
                 if(gameBoard[y + 2][x + (-1*parity)]==0 && !possiblemoves.contains(new Field(y + 2, x + (-1*parity)))) {
                 	possiblemoves.add(new Field(y + 2, x + (-1*parity)));
                 	showPossibleMoves(y + 2, x + (-1*parity));
@@ -291,7 +297,7 @@ public void run() {
         // nieparzyste i parzyste  x o 
 	        //              
         try {
-	        if (!(gameBoard[y][ x - 1]==0)) {
+	        if (!(gameBoard[y][ x - 1]==0)&&!(gameBoard[y][ x - 1]==-1)) {
 	            if(gameBoard[y][x - 2]==0 && !possiblemoves.contains(new Field(y, x - 2))) {
 	            	possiblemoves.add(new Field(y, x - 2));
 	            	showPossibleMoves(y, x - 2);
@@ -301,7 +307,7 @@ public void run() {
         // nieparzyste i parzyste  o x
 
         try {
-        	if (!(gameBoard[y][ x + 1]==0)) {
+        	if (!(gameBoard[y][ x + 1]==0)&&!(gameBoard[y][ x + 1]==-1)) {
         		if(gameBoard[y][x + 2]==0)
 	            if( !possiblemoves.contains(new Field(y, x + 2))) {
 	            	possiblemoves.add(new Field(y, x + 2));
@@ -336,5 +342,27 @@ public void run() {
 		public void setY(int y) {
 			Y = y;
 		}
+		
+		
 	}
+private void printBoards() {
+			for(int i=0 ; i<boardPattern.length ; i++) {
+				for(int j=0 ; j<boardPattern[0].length ; j++) {
+					if(boardPattern[i][j]>=0)
+						System.out.print(" ");
+					System.out.print(boardPattern[i][j]);
+				}
+				System.out.println();
+			}
+			System.out.println();
+			System.out.println();
+			for(int i=0 ; i<gameBoard.length ; i++) {
+				for(int j=0 ; j<gameBoard[0].length ; j++) {
+					if(gameBoard[i][j]>=0)
+						System.out.print(" ");
+					System.out.print(gameBoard[i][j]);
+				}
+				System.out.println();
+			}
+		}
 }
