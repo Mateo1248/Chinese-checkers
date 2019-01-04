@@ -15,6 +15,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * @author danieldrapala
+ *
+ */
 public class ClientMenu extends Application {
 
 	

@@ -63,7 +63,7 @@ public class Game extends Thread {
 
 			{-1,-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
 	};
-	private int[][] gameBoard = new int[boardPattern.length][boardPattern[0].length];
+	private int[][] gameBoard =new int[boardPattern.length][boardPattern[0].length];
 	
 	
 	Game(ServerSocket serverSocket, Player host, int playersNo, int botsNo, Server server) {
@@ -83,6 +83,15 @@ public class Game extends Thread {
 	}
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public void run() {
 		
 		//polacz sie z botami
@@ -98,7 +107,7 @@ public class Game extends Thread {
 		//petla gry
 		while(true) {
 			
-			if(checkStateOfPlayers())	
+			if(checkStateOfPlayers())
 				continue;
 			
 			if(players.size()>0) {
@@ -121,13 +130,11 @@ public class Game extends Thread {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			Communicator com = Communicator.fromString(move);
-			if(com.getMessage().equals("MOVE")) {
+			if(move.equals("MOVE")) {
+				Communicator com = Communicator.fromString(move);
 				move(com.getArg(0), com.getArg(1), com.getArg(2), com.getArg(3));
-				printBoards();
 			}
 				
-		
 			if(isPlayerWon(players.get(i).getIdTriangle())) {
 				sendMessageToPlayers("WON", -1);
 				players.get(i).close();
@@ -154,12 +161,13 @@ public class Game extends Thread {
 	
 	
 	private void createBots() {
-		for(int i=1 ; i<= botsNo ; i++) {
+		for(int i=1 ; i< botsNo+1 ; i++) {
 			try {
 				bots.add(new Bot());
 				bots.get(i-1).start();
 				players.add(new Player(serverSocket.accept(), i));
 				players.get(i).setIdTriangle(playersNo);
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -176,7 +184,6 @@ public class Game extends Thread {
 				int id = players.get(i).getId();
 				players.get(i).close();
 				players.remove(i);
-				
 				sendMessageToPlayers("CLOSED " + id, -1);
 				return true;
 			}
@@ -237,6 +244,7 @@ public class Game extends Thread {
 	}
 	
 	
+
 	private void printBoards() {
 		for(int i=0 ; i<boardPattern.length ; i++) {
 			for(int j=0 ; j<boardPattern[0].length ; j++) {
@@ -259,6 +267,7 @@ public class Game extends Thread {
 	}
 	
 	
+
 	private void close() {
 		for(Player x : players) {
 			x.close();

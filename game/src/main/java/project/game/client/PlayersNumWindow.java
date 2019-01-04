@@ -5,11 +5,16 @@ import java.util.Optional;
 
 import javafx.scene.control.ChoiceDialog;
 
+/**
+ * @author danieldrapala
+ * 
+ */
 public class PlayersNumWindow {
 
     private int numb;
     private int num;
 
+    
     public PlayersNumWindow() {
 
         ArrayList<Integer> choices = new ArrayList<>();
@@ -38,6 +43,9 @@ public class PlayersNumWindow {
 
     /**
      * @return number of Bots
+     */
+    /**
+     * @return
      */
     public int getnumB(){
         return numb;

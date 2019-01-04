@@ -245,7 +245,7 @@ public void run() {
          x x         x x
   */
         // parzyste o    nieparzyste      x
-	        //           x						o
+	    //           x						o
         
         try {
             if (!(gameBoard[y + 1*parity][x + 1*parity]==0)) {

@@ -12,8 +12,6 @@ import project.game.board.FieldsColor;
  * @author danieldrapala
  *
  */
-
-
 public  class Board {
 	public int[][] STAR_REPRESENTATION=
 		 {
