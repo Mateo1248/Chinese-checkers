@@ -4,6 +4,7 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import project.game.board.Field;
 import project.game.client.Client;
 
 /**
@@ -60,16 +61,25 @@ public class Bot extends Thread {
 	private int gameBoardH = boardPattern.length;
 	private int gameBoardL = boardPattern[0].length;
 	private ArrayList<Field> possiblemoves;
+	private ArrayList<Field> allFields;
+	private ArrayList<Field> myFields;
+    private ArrayList<Field> bettermoves;
 	
 	/**
 	 * constructor for Bot 
 	 */
 	Bot(int numofp) {
 		isRunning=true;
+		allFields=new ArrayList<Field>();
 		for(int i=0 ; i<boardPattern.length ; i++) {
 			gameBoard[i] = (int[])boardPattern[i].clone();
-		}
+			for(int j=0 ; j<boardPattern[0].length ; j++) {
+			allFields.add(new Field(i,j));
+			}
+			}
 		possiblemoves = new ArrayList<Field>();
+		myFields= new ArrayList<Field>();
+		bettermoves=new ArrayList<Field>();
 		rand = new Random();
 		this.numofP=numofp;
 		
@@ -165,23 +175,33 @@ public void run() {
 	 */
 	private void makeMove() {
 		int []move = new int[4];
-		
+		System.out.println("  siemaa");
+
 		Field field = getRandomField();
 		
-		move[0]=field.getX();
-		move[1]=field.getY();
+		move[0]=field.getY();
+		move[1]=field.getX();
 		
 		possiblemoves.clear();
-		
-		showPossibleMoves(field.getX(), field.getY());
-		
-		field = possiblemoves.get(rand.nextInt(possiblemoves.size()));
-		move[2]=field.getX();
-		move[3]=field.getY();
+		System.out.println("tu jestem siemaa");
+
+		showPossbileMoves(field);
+		bettermoves.clear();
+		for(Field heh:possiblemoves) {
+			if(getDistance(heh)-getDistance(field)<=0) {
+				bettermoves.add(heh);
+			}
+		}
+		if(bettermoves.size()>0)
+		field = bettermoves.get(rand.nextInt(bettermoves.size()));
+		else
+		field= possiblemoves.get(rand.nextInt(possiblemoves.size()));
+		move[2]=field.getY();
+		move[3]=field.getX();
 		System.out.println(move[0]+" "+ move[1]+" "+ move[2]+" "+ move[3]);
-		updateBoard(move[1],move[0],move[2] , move[3] );
+		updateBoard(move[0],move[1] , move[2],move[3] );
 		printBoards();
-		client.sendMessage("MOVE "  + move[1]+ " "+ move[0]+ " " + move[2]  + " " + move[3] );
+		client.sendMessage("MOVE "  +move[0]+" "+ move[1]+" "+ move[2]+" "+ move[3]);
 		possiblemoves.clear();
 	}
 	
@@ -193,9 +213,9 @@ public void run() {
 	 * @param y2
 	 * 
 	 */
-	private void updateBoard(int x1, int y1, int x2, int y2) {
-		gameBoard[x2][y2] = gameBoard[x1][y1];
-		gameBoard[x1][y1]=0;
+	private void updateBoard(int y1, int x1, int y2, int x2) {
+		gameBoard[y2][x2] = gameBoard[y1][x1];
+		gameBoard[y1][x1]=0;
 	}
 	
 	
@@ -208,20 +228,30 @@ public void run() {
 	
 	
 	private Field getRandomField() {
-		ArrayList<Field> botfields = new ArrayList<Field>();
-		
+		ArrayList<Field> botfields =new ArrayList<Field>();
+		 myFields.clear();
+			System.out.println("siemaa2");
+
 		for (int y = 0 ; y < gameBoardH ; y++) {
-	        for (int x = 0 ; x < gameBoardL ; x++) {
-	           	if(gameBoard[y][x]==client.getIdGame()) {
-	           		possiblemoves.clear();
-	           		showPossibleMoves(x,y);
+		        for (int x = 0 ; x < gameBoardL ; x++) {
+		        	if(gameBoard[y][x]==client.getIdGame()) {
+		        	myFields.add(getField(y,x));
+		        	}
+		        }
+		}
+		for (Field xd:myFields) {
+	        	
+	           	if(gameBoard[xd.getY()][xd.getX()]==client.getIdGame()) {
+	    			System.out.println("siemaa3");
+
+	           		showPossbileMoves(xd);
 	           		if(possiblemoves.size()>0) {
-	           			botfields.add(new Field(x, y));
+	           			botfields.add(xd);
 	           		}
 	           		possiblemoves.clear();
 	           	}
 	        }
-	    }
+	    
 		return botfields.get(rand.nextInt(botfields.size()));
 		
 	}
@@ -232,14 +262,43 @@ public void run() {
 	}
 	
 	
-	private void showPossibleMoves(int x, int y) {
+	public void showPossbileMoves(Field f) {
+            if (f.getY() % 2 == 1) {
+            	Field f1=getField(f.getY()-1,f.getX()-1);
+                higlightPoint(f1);
+            	Field f2=getField(f.getY()+1,f.getX()-1);
+
+                higlightPoint(f2);
+            } else {
+            	Field f1=getField(f.getY()-1,f.getX()+1);
+            	higlightPoint(f1);
+            	Field f2=getField(f.getY()+1,f.getX()+1);
+            	higlightPoint(f2);
+            }
+        	Field f3=getField(f.getY()+1,f.getX());
+            higlightPoint(f3);
+        	Field f4=getField(f.getY()-1,f.getX());
+            higlightPoint(f4);
+        	Field f5=getField(f.getY(),f.getX()+1);
+            higlightPoint(f5);
+            Field f6=getField(f.getY(),f.getX()-1);
+            higlightPoint(f6);
+            
+            showPossibleMovesMoreThan2(f);			
+
+        }
+
+	private void showPossibleMovesMoreThan2(Field ftemp) {
         int parity;
+        int y=ftemp.getY();
+        int x=ftemp.getX();
         if (y % 2 == 1) {
             parity = -1;
         }
         else {
             parity = 1;
         }
+        Field f;
         // DLA PARZYSTYCH I NIE PARZYSTYCH WIERSZY SKOKI DZIAŁAJĄ INACZEJ 
   /*    nieparzyste o
    * 	 x x       x x 
@@ -255,41 +314,49 @@ public void run() {
         
         try {
             if (!(gameBoard[y + 1*parity][x + 1*parity]==0)&&!(gameBoard[y + 1*parity][x + 1*parity]==-1)) {
-                if (gameBoard[y + 2*parity][ x + 1*parity]==0 && !possiblemoves.contains(new Field(y + 2*parity, x + 1*parity))) {
-                	possiblemoves.add(new Field(y + 2*parity, x + 1*parity));
-                	showPossibleMoves(y + 2*parity, x + 1*parity);
+                f=getField(y + 2*parity, x + 1*parity);
+                if (gameBoard[y + 2*parity][ x + 1*parity]==0 &&!(possiblemoves.contains(f))) {
+                	
+                	higlightPoint(f);
+                	showPossibleMovesMoreThan2(f);
                 }
             }
         } catch (NullPointerException exc) {}
 
         // nieparzyste   o      parzyste     x
-	        //              x	    	       o
+	    //              x	    	       o
         try {
             if (!(gameBoard[y + (-1*parity)][ x + 1*parity]==0)&&!(gameBoard[y+ (-1*parity)][ x + 1*parity]==-1)) {
-                if(gameBoard[y + (-2*parity)][x + 1*parity]==0 && !possiblemoves.contains(new Field(y + (-2*parity), x + 1*parity))) {
-                	possiblemoves.add(new Field(y + (-2*parity), x + 1*parity));
-                	showPossibleMoves(y + (-2*parity), x + 1*parity);
+               
+                	f=getField(y + (-2*parity), x + 1*parity); 
+                	if(gameBoard[y + (-2*parity)][x + 1*parity]==0&&!(possiblemoves.contains(f)) ) {
+                	higlightPoint(f);
+                	showPossibleMovesMoreThan2(f);
                 }
             }
         } catch (NullPointerException exc) {}
         
         // nieparzyste  x      parzyste    x
-	        //              o	    	       o
+	    //              o	    	       o
         try {
             if (!(gameBoard[y - 1][x]==0&&!(gameBoard[y-1][ x]==-1))) {
-                if(gameBoard[y - 2][x + (-1*parity)]==0 && !possiblemoves.contains(new Field(y - 2, x + (-1*parity)))) {
-                	possiblemoves.add(new Field(y - 2, x + (-1*parity)));
-                	showPossibleMoves(y - 2, x + (-1*parity));
+                
+                	f=getField(y - 2, x + (-1*parity));
+                	if(gameBoard[y - 2][x + (-1*parity)]==0&&!(possiblemoves.contains(f)) ) {
+                	higlightPoint(f);
+                	showPossibleMovesMoreThan2(f);
                 }
             }
         } catch (NullPointerException exc) {}
         // nieparzyste  o      parzyste    o
-	        //              x	    	       x
+	    //              x	    	       x
         try {
             if (!(gameBoard[y + 1][x]==0)&&!(gameBoard[y+1][ x]==-1)) {
-                if(gameBoard[y + 2][x + (-1*parity)]==0 && !possiblemoves.contains(new Field(y + 2, x + (-1*parity)))) {
-                	possiblemoves.add(new Field(y + 2, x + (-1*parity)));
-                	showPossibleMoves(y + 2, x + (-1*parity));
+            	f=getField(y + 2, x + (-1*parity));
+                if(gameBoard[y + 2][x + (-1*parity)]==0 &&!(possiblemoves.contains(f))) {
+                	
+                	higlightPoint(f);
+                	showPossibleMovesMoreThan2(f);
                 }
             }
         } catch (NullPointerException exc) {}
@@ -298,21 +365,23 @@ public void run() {
 	        //              
         try {
 	        if (!(gameBoard[y][ x - 1]==0)&&!(gameBoard[y][ x - 1]==-1)) {
-	            if(gameBoard[y][x - 2]==0 && !possiblemoves.contains(new Field(y, x - 2))) {
-	            	possiblemoves.add(new Field(y, x - 2));
-	            	showPossibleMoves(y, x - 2);
+	        	f=getField(y, x - 2);
+	            if(gameBoard[y][x - 2]==0 &&!(possiblemoves.contains(f))) {
+	            	
+	            	higlightPoint(f);
+	            	showPossibleMovesMoreThan2(f);
 	            }
 	        }
         } catch (NullPointerException exc) {}
         // nieparzyste i parzyste  o x
 
         try {
-        	if (!(gameBoard[y][ x + 1]==0)&&!(gameBoard[y][ x + 1]==-1)) {
-        		if(gameBoard[y][x + 2]==0)
-	            if( !possiblemoves.contains(new Field(y, x + 2))) {
-	            	possiblemoves.add(new Field(y, x + 2));
-	            	showPossibleMoves(y, x + 2);
-	            }
+        	if (!(gameBoard[y][ x + 1]==0)&&!(gameBoard[y][ x + 1]==-1)) {f=getField(y, x + 2);
+        		if(gameBoard[y][x + 2]==0&&!(possiblemoves.contains(f))) {
+        			
+	            	higlightPoint(f);
+	            	showPossibleMovesMoreThan2(f);
+        		}
 	        }
         }
         catch (NullPointerException exc) {}
@@ -322,7 +391,7 @@ public void run() {
 		private int X;	
 		private int Y;
 		
-		Field(int x, int y) {
+		Field(int y, int x) {
 			this.X=x;
 			this.Y=y;
 		}
@@ -365,4 +434,22 @@ private void printBoards() {
 				System.out.println();
 			}
 		}
+Field getField(int y,int x){
+	
+	for(Field f:allFields)
+	{
+		if(f.getX()==x&&f.getY()==y) {
+			return f;
+		}
+	}
+		return new Field(-1,-1);
+	
+	}
+private void higlightPoint(Field f) {
+	
+	if (gameBoard[f.getY()][f.getX()]==0 && !(myFields.contains(f))){
+		if(!(possiblemoves.contains(f)))
+		possiblemoves.add(f);
+		}
+}
 }
