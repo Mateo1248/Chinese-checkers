@@ -24,10 +24,13 @@ import project.game.board.Field;
 import project.game.board.FieldsColor;
 import project.game.server.Communicator;
 
-//TODO: WINDOW PRZECHOWUJE 'ID klienta' KLIENT MA SWOJ NUMEREK/KOLOREK/RAMIE 
-//wiec treba tutaj zmienic do wszystkiego jesli field jest legal && czy jest  danego koloru (metoda get Client Color bedzie przechowywana u klienta
 
 
+
+/**
+ * @author danieldrapala
+ * @author mateo1248
+ */
 
 public class GameWind extends Thread{
 	
@@ -40,12 +43,18 @@ public class GameWind extends Thread{
 	private ArrayList<Text> t=new ArrayList<>();
 	private int numPP;
 	private int j;
-	private int cl=0;
 	private boolean isRunning=true;
-	private boolean tr=true;
+
 	Group root;
 
 	private Button skipb;
+	/**
+	 * @param num
+	 * @param numb
+	 * @param client
+	 * @throws InterruptedException
+	 */
+	
 	GameWind(int num, int numb, Client client) throws InterruptedException{
 		this.numPP= num;
 	this.client = client;
@@ -61,24 +70,33 @@ public class GameWind extends Thread{
     img.setFitHeight(DISPLAY_HEIGHT);
     img.setFitWidth(DISPLAY_WIDTH);
     img.setImage(image);
+    
     Scene s = new Scene(root, DISPLAY_WIDTH, DISPLAY_HEIGHT);
-    root.getChildren().add(img);
+    
     TextField name = new TextField("Player number "+(client.getId()+1)+" Color:"); 
-    name.setEditable(false);
-    text = new TextField("waiting  for players..."); 
-    text.setEditable(false);
+    Circle o=new Circle(); 
     VBox texts = new VBox(10);
     HBox xd=new HBox();
-    xd.setCenterShape(true);
-    Circle o=new Circle();
+    skipb=new Button("Skip");
+
+    root.getChildren().add(img);
+   
+    text = new TextField("waiting  for players..."); 
+    text.setEditable(false);
+    text.setBackground(Background.EMPTY);
+    text.setBorder(Border.EMPTY);
+    
+   
+    
     o.setRadius(10);
     o.setFill(Paint.valueOf(FieldsColor.values()[client.getIdGame()].getColor()));
     o.setStroke(Paint.valueOf("BLACK"));
+    
+    name.setEditable(false);
     name.setBackground(Background.EMPTY);
     name.setBorder(Border.EMPTY);
-    text.setBackground(Background.EMPTY);
-    text.setBorder(Border.EMPTY);
-     skipb=new Button("Skip");
+   
+    xd.setCenterShape(true);
     xd.getChildren().add(name);
     xd.getChildren().add(o);
     
@@ -86,7 +104,6 @@ public class GameWind extends Thread{
     texts.getChildren().add(text);
     texts.getChildren().add(skipb);
 
-    
     board =  Board.initialize(num);
     
     skipb.setDisable(true);
@@ -166,6 +183,7 @@ public class GameWind extends Thread{
 }
 	
 	
+
 public void run() {
 		
 		while(true) {
@@ -234,6 +252,10 @@ public void run() {
 	}
 	
 	
+	/**
+	 * @param winner
+	 * @return coordinates
+	 */
 	private double getWinnerX(int winner) {
 		switch (winner) {
 		case 1:
@@ -253,6 +275,10 @@ public void run() {
 	}
 	
 	
+	/**
+	 * @param winner
+	 * @return coordinates
+	 */
 	private double getWinnerY(int winner) {
 		switch (winner) {
 		case 1:
@@ -273,6 +299,11 @@ public void run() {
 	}
 	
 	
+	/**
+	 * @param numP
+	 * @param id
+	 * @return GameId(FieldColor)
+	 */
 	private int getIdClientWon(int numP,int id) {
 		switch(numP) {
 		case 2:

@@ -15,10 +15,16 @@ public enum FieldsColor {
 		EH("TRANSPARENT");
 	    private final String color;
 
+	    /**
+	     * @param color
+	     */
 	    FieldsColor(String color) {
 	        this.color = color;
 	    }
 
+	    /**
+	     * @return get StringColor from enum
+	     */
 	    public String getColor() {
 	        return color;
 	    }

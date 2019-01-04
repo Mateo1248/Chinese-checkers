@@ -13,6 +13,10 @@ import java.net.UnknownHostException;
 import project.game.server.Communicator;
 
 
+/**
+ * @author danieldrapala
+ *
+ */
 public class Client {
 	private Socket socket;
 	private BufferedReader in;
@@ -20,6 +24,9 @@ public class Client {
 	private int id;
 	private int idgame;
 	
+	/**
+	 * @throws SocketTimeoutException
+	 */
 	public Client() throws SocketTimeoutException{
 		try {
 			SocketAddress socadr = new InetSocketAddress("localhost", 4444);
@@ -41,39 +48,61 @@ public class Client {
 	}
 	
 	
+	/**
+	 * @return HostValidation
+	 */
 	boolean isHost() {
 		if(id == 0) return true;
 		else return false;
 	}
 	
 	
+	/**
+	 * @return line from Client's bufferReader
+	 */
 	public String read() {
 		try { return in.readLine(); } 
 		catch (IOException e) {	e.printStackTrace(); return null; }
 	}
 	
 	
+	/**
+	 * @param message
+	 */
 	public void write(String message) {
 		out.println( message );
 	}
 	
 	
+	/**
+	 * @return Communicator between clients
+	 */
 	public Communicator getMessage() {
 		Communicator x = Communicator.fromString(read());
 		return x;		
 	}
 	
 	
+	/**
+	 * @param x
+	 */
+	
 	public void sendMessage(String x) {
 		write(x);
 	}
 	
 	
+	/**
+	 * @return normal Id given by server
+	 */
 	public int getId() {
 		return id;
 	}
 	
 	
+	/**
+	 * @param numP
+	 */
 	public void setIdGame(int numP) {
 		switch(numP) {
 		case 2:
@@ -101,11 +130,17 @@ public class Client {
 	}
 	
 	
+	/**
+	 * @return Clients id in Game
+	 */
 	public int getIdGame() {
 		return idgame;
 	}
 	
 	
+	/**
+	 * closing method
+	 */
 	public void close() {
 		try {
 			socket.close();

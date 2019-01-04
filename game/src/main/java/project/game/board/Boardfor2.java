@@ -7,6 +7,9 @@ public class Boardfor2 extends Board {
 			draw();
 
 		}
+		/**
+		 * 	{@link #initialize(int)} 
+		 */
 		public void draw() {
 	        board = new Field[HEIGHT][WIDTH];
 	        highlighted = new ArrayList<>();

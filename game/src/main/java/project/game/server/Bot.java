@@ -6,6 +6,10 @@ import java.util.Random;
 
 import project.game.client.Client;
 
+/**
+ * @author danieldrapala
+ * @author mateo1248
+ */
 public class Bot extends Thread {
 
 	private Client client;
@@ -56,6 +60,9 @@ public class Bot extends Thread {
 	private int gameBoardL = gameBoard[0].length;
 	private ArrayList<Field> possiblemoves;
 	
+	/**
+	 * constructor for Bot 
+	 */
 	Bot() {
 		try {
 			this.client = new Client();
@@ -146,6 +153,9 @@ public void run() {
 	}
 	
 	
+	/**
+	 * bot move thanks to this method
+	 */
 	private void makeMove() {
 		int []move = new int[4];
 		
@@ -166,12 +176,23 @@ public void run() {
 		possiblemoves.clear();
 	}
 	
+	/**
+	 * updating mocked board
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * 
+	 */
 	private void updateBoard(int x1, int y1, int x2, int y2) {
 		gameBoard[x2][y2] = gameBoard[x1][y1];
 		gameBoard[x1][y1]=0;
 	}
 	
 	
+	/**
+	 * turning oFF Bot
+	 */
 	public void turnOff() {
 		isRunning=false;
 	}
