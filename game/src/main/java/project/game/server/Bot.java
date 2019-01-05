@@ -174,7 +174,6 @@ public void run() {
 	 */
 	private void makeMove() {
 		int []move = new int[4];
-		printBoards();
 		int count =0;
 		
 		myFields = getMyField();

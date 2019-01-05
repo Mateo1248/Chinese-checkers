@@ -81,17 +81,6 @@ public class Game extends Thread {
 			gameBoard[i] = (int[])boardPattern[i].clone();
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	public void run() {
 		
 		//polacz sie z botami
@@ -130,11 +119,12 @@ public class Game extends Thread {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if(move.equals("MOVE")) {
-				Communicator com = Communicator.fromString(move);
+			Communicator com = Communicator.fromString(move);
+			if(com.getMessage().equals("MOVE")) {
+				
 				move(com.getArg(0), com.getArg(1), com.getArg(2), com.getArg(3));
 			}
-				
+			printBoards();
 			if(isPlayerWon(players.get(i).getIdTriangle())) {
 				sendMessageToPlayers("WON", -1);
 				players.get(i).close();
@@ -273,4 +263,5 @@ public class Game extends Thread {
 			x.close();
 		}
 	}
+	
  }
