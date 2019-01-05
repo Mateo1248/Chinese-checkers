@@ -241,8 +241,8 @@ public void run() {
 				int xd= getIdClientWon(numPP,queue.getArg(0));
 				winner.get(j).setLayoutX(getWinnerX(xd)-5);
 				winner.get(j).setLayoutY(getWinnerY(xd)-5);
-				t.get(j).setX(getWinnerX(xd));
-				t.get(j).setY(getWinnerY(xd));
+				t.get(j).setLayoutX(getWinnerX(xd)-10);
+				t.get(j).setLayoutY(getWinnerY(xd));
 				winner.get(j).setFill(Paint.valueOf("GOLD"));
 				j++;
 			}
