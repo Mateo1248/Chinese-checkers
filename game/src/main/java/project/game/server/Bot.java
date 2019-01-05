@@ -4,7 +4,6 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import project.game.board.Field;
 import project.game.client.Client;
 
 /**
@@ -61,9 +60,9 @@ public class Bot extends Thread {
 	private int gameBoardH = boardPattern.length;
 	private int gameBoardL = boardPattern[0].length;
 	private ArrayList<Field> possiblemoves;
-	private ArrayList<Field> allFields;
 	private ArrayList<Field> myFields;
     private ArrayList<Field> bettermoves;
+    private ArrayList<Field> allFields;
 	
 	/**
 	 * constructor for Bot 
@@ -74,8 +73,8 @@ public class Bot extends Thread {
 		for(int i=0 ; i<boardPattern.length ; i++) {
 			gameBoard[i] = (int[])boardPattern[i].clone();
 			for(int j=0 ; j<boardPattern[0].length ; j++) {
-			allFields.add(new Field(i,j));
-			}
+				allFields.add(new Field(i,j));
+				}
 			}
 		possiblemoves = new ArrayList<Field>();
 		myFields= new ArrayList<Field>();
@@ -175,34 +174,49 @@ public void run() {
 	 */
 	private void makeMove() {
 		int []move = new int[4];
-		System.out.println("  siemaa");
-
-		Field field = getRandomField();
+		printBoards();
+		int count =0;
 		
-		move[0]=field.getY();
-		move[1]=field.getX();
+		myFields = getMyField();
+		
+		while(count<myFields.size()) {
+		Field f=myFields.get(rand.nextInt(myFields.size()));
+		move[0]=f.getY();
+		move[1]=f.getX();
 		
 		possiblemoves.clear();
-		System.out.println("tu jestem siemaa");
-
-		showPossbileMoves(field);
 		bettermoves.clear();
+		
+		showPossbileMoves(f);
+		
+		if(possiblemoves.size()>0) {
 		for(Field heh:possiblemoves) {
-			if(getDistance(heh)-getDistance(field)<=0) {
+			if(getDistance(heh)-getDistance(f)<=0) {
 				bettermoves.add(heh);
 			}
 		}
-		if(bettermoves.size()>0)
-		field = bettermoves.get(rand.nextInt(bettermoves.size()));
+		if(bettermoves.size()>0) {
+		f = bettermoves.get(rand.nextInt(bettermoves.size()));
+		move[2]=f.getY();
+		move[3]=f.getX();
+		break;}
+		else {
+		f= possiblemoves.get(rand.nextInt(possiblemoves.size()));
+		move[2]=f.getY();
+		move[3]=f.getX();
+		break;
+		}
+		}
 		else
-		field= possiblemoves.get(rand.nextInt(possiblemoves.size()));
-		move[2]=field.getY();
-		move[3]=field.getX();
+		{ 
+			myFields.remove(f);
+			count++;
+		}
+		}
+		
 		System.out.println(move[0]+" "+ move[1]+" "+ move[2]+" "+ move[3]);
 		updateBoard(move[0],move[1] , move[2],move[3] );
-		printBoards();
 		client.sendMessage("MOVE "  +move[0]+" "+ move[1]+" "+ move[2]+" "+ move[3]);
-		possiblemoves.clear();
 	}
 	
 	/**
@@ -227,32 +241,17 @@ public void run() {
 	}
 	
 	
-	private Field getRandomField() {
-		ArrayList<Field> botfields =new ArrayList<Field>();
-		 myFields.clear();
-			System.out.println("siemaa2");
-
+	private ArrayList<Field> getMyField() {
+		ArrayList<Field> fields=new ArrayList<Field>();
 		for (int y = 0 ; y < gameBoardH ; y++) {
 		        for (int x = 0 ; x < gameBoardL ; x++) {
 		        	if(gameBoard[y][x]==client.getIdGame()) {
-		        	myFields.add(getField(y,x));
+		        	fields.add(getField(y,x));
 		        	}
 		        }
 		}
-		for (Field xd:myFields) {
-	        	
-	           	if(gameBoard[xd.getY()][xd.getX()]==client.getIdGame()) {
-	    			System.out.println("siemaa3");
-
-	           		showPossbileMoves(xd);
-	           		if(possiblemoves.size()>0) {
-	           			botfields.add(xd);
-	           		}
-	           		possiblemoves.clear();
-	           	}
-	        }
-	    
-		return botfields.get(rand.nextInt(botfields.size()));
+		
+		return fields;
 		
 	}
 	
@@ -262,30 +261,29 @@ public void run() {
 	}
 	
 	
-	public void showPossbileMoves(Field f) {
-            if (f.getY() % 2 == 1) {
-            	Field f1=getField(f.getY()-1,f.getX()-1);
-                higlightPoint(f1);
-            	Field f2=getField(f.getY()+1,f.getX()-1);
+	public  void  showPossbileMoves(Field f) {
+		if (f.getY() % 2 == 1) {
+        	Field f1=getField(f.getY()-1,f.getX()-1);
+            higlightPoint(f1);
+        	Field f2=getField(f.getY()+1,f.getX()-1);
 
-                higlightPoint(f2);
-            } else {
-            	Field f1=getField(f.getY()-1,f.getX()+1);
-            	higlightPoint(f1);
-            	Field f2=getField(f.getY()+1,f.getX()+1);
-            	higlightPoint(f2);
-            }
-        	Field f3=getField(f.getY()+1,f.getX());
-            higlightPoint(f3);
-        	Field f4=getField(f.getY()-1,f.getX());
-            higlightPoint(f4);
-        	Field f5=getField(f.getY(),f.getX()+1);
-            higlightPoint(f5);
-            Field f6=getField(f.getY(),f.getX()-1);
-            higlightPoint(f6);
-            
-            showPossibleMovesMoreThan2(f);			
-
+            higlightPoint(f2);
+        } else {
+        	Field f1=getField(f.getY()-1,f.getX()+1);
+        	higlightPoint(f1);
+        	Field f2=getField(f.getY()+1,f.getX()+1);
+        	higlightPoint(f2);
+        }
+    	Field f3=getField(f.getY()+1,f.getX());
+        higlightPoint(f3);
+    	Field f4=getField(f.getY()-1,f.getX());
+        higlightPoint(f4);
+    	Field f5=getField(f.getY(),f.getX()+1);
+        higlightPoint(f5);
+        Field f6=getField(f.getY(),f.getX()-1);
+        higlightPoint(f6);
+        
+        showPossibleMovesMoreThan2(f);	
         }
 
 	private void showPossibleMovesMoreThan2(Field ftemp) {
@@ -386,7 +384,6 @@ public void run() {
         }
         catch (NullPointerException exc) {}
     }
-	
 	private class Field {
 		private int X;	
 		private int Y;
@@ -414,42 +411,42 @@ public void run() {
 		
 		
 	}
-private void printBoards() {
-			for(int i=0 ; i<boardPattern.length ; i++) {
-				for(int j=0 ; j<boardPattern[0].length ; j++) {
-					if(boardPattern[i][j]>=0)
-						System.out.print(" ");
-					System.out.print(boardPattern[i][j]);
-				}
-				System.out.println();
-			}
-			System.out.println();
-			System.out.println();
-			for(int i=0 ; i<gameBoard.length ; i++) {
-				for(int j=0 ; j<gameBoard[0].length ; j++) {
-					if(gameBoard[i][j]>=0)
-						System.out.print(" ");
-					System.out.print(gameBoard[i][j]);
-				}
-				System.out.println();
+	Field getField(int y,int x){
+		
+		for(Field f:allFields)
+		{
+			if(f.getX()==x&&f.getY()==y) {
+				return f;
 			}
 		}
-Field getField(int y,int x){
-	
-	for(Field f:allFields)
-	{
-		if(f.getX()==x&&f.getY()==y) {
-			return f;
+			return new Field(2,2);
+		
 		}
-	}
-		return new Field(-1,-1);
-	
-	}
 private void higlightPoint(Field f) {
 	
 	if (gameBoard[f.getY()][f.getX()]==0 && !(myFields.contains(f))){
 		if(!(possiblemoves.contains(f)))
 		possiblemoves.add(f);
 		}
+}
+private void printBoards() {
+	for(int i=0 ; i<boardPattern.length ; i++) {
+		for(int j=0 ; j<boardPattern[0].length ; j++) {
+			if(boardPattern[i][j]>=0)
+				System.out.print(" ");
+			System.out.print(boardPattern[i][j]);
+		}
+		System.out.println();
+	}
+	System.out.println();
+	System.out.println();
+	for(int i=0 ; i<gameBoard.length ; i++) {
+		for(int j=0 ; j<gameBoard[0].length ; j++) {
+			if(gameBoard[i][j]>=0)
+				System.out.print(" ");
+			System.out.print(gameBoard[i][j]);
+		}
+		System.out.println();
+	}
 }
 }

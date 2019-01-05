@@ -68,6 +68,7 @@ public class Communicator {
 	 * @return Communicator created from String 
 	 */
 	public static Communicator fromString( String src ) {
+		try {
 		String[] words = src.split( " " );
 		if( words.length < 1 ) return null;
 		Communicator ret = new Communicator( words[0] );
@@ -80,5 +81,11 @@ public class Communicator {
 			}
 		}
 		return ret;
+		
+		}
+		catch(NullPointerException x)
+		{x.printStackTrace();
+		}
+		return null;
 	}
 }

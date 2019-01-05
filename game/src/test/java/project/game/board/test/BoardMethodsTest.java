@@ -29,7 +29,7 @@ public class BoardMethodsTest {
 	@Test 
 	public void changingColorTest() {
 		b.changeFieldsColor(b.getNode(6, 6),FieldsColor.PLAYER3);
-		assertEquals(f2.getColor(),b.getNode(10,10).getColor());
+		assertEquals(f2.getColor(),b.getNode(6,6).getColor());
 		
 	}
 	ArrayList<Field> arr=new ArrayList<Field>();
