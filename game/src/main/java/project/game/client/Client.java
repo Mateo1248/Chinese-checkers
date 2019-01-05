@@ -46,12 +46,13 @@ public class Client {
 		catch (UnknownHostException e) { e.printStackTrace(); } 
 		catch (IOException e) { e.printStackTrace(); }
 	}
+
 	
 	
 	/**
 	 * @return HostValidation
 	 */
-	boolean isHost() {
+	public boolean isHost() {
 		if(id == 0) return true;
 		else return false;
 	}

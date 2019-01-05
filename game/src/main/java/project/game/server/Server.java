@@ -7,9 +7,12 @@ public class Server {
 
 	private ServerSocket serverSocket;
 	private boolean isRunning;
+	private int playersNo, botsNo;
+	private Game game;
+	private Player host;
 		
 	
-	Server() {
+	public Server() {
 		try { serverSocket = new ServerSocket(4444); } 
 		catch (IOException e) { e.printStackTrace(); }
 	}
@@ -28,19 +31,19 @@ public class Server {
 	 * wait for the host, get init param from him
 	 * then start a game
 	 */
-	void start() {
+	public void start() {
 		
 		isRunning = true;
 		
 		System.out.println("server start");
 		try {
-			Player host = new  Player( serverSocket.accept(), 0 );
+			host = new  Player( serverSocket.accept(), 0 );
 			
-			int players = Integer.parseInt( host.read() );
+			this.playersNo = Integer.parseInt( host.read() );
 	
-			int bots = Integer.parseInt( host.read() );
+			this.botsNo = Integer.parseInt( host.read() );
 			
-			Game game = new Game(serverSocket, host, players, bots, this);
+			game = new Game(serverSocket, host, playersNo, botsNo, this);
 			game.start();
 			
 			while(true) {
@@ -51,7 +54,27 @@ public class Server {
 		catch (IOException e) {	e.printStackTrace(); }
 	}
 	
+	public Player getHost() {
+		return this.host;
+	}
 	
+	public ServerSocket getServerSocket() {
+		return this.serverSocket;
+	}
+	
+	public int getPlayersNo() {
+		return this.playersNo;
+	}
+	
+	
+	public int getBotsNo() {
+		return this.botsNo;
+	}
+	
+	
+	public Game getGame() {
+		return this.game;
+	}
 	
 	public void closeSocket() {
 		try {

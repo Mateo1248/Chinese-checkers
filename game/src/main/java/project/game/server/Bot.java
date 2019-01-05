@@ -383,6 +383,7 @@ public void run() {
         }
         catch (NullPointerException exc) {}
     }
+	
 	private class Field {
 		private int X;	
 		private int Y;
@@ -421,31 +422,12 @@ public void run() {
 			return new Field(2,2);
 		
 		}
-private void higlightPoint(Field f) {
 	
-	if (gameBoard[f.getY()][f.getX()]==0 && !(myFields.contains(f))){
-		if(!(possiblemoves.contains(f)))
-		possiblemoves.add(f);
-		}
-}
-private void printBoards() {
-	for(int i=0 ; i<boardPattern.length ; i++) {
-		for(int j=0 ; j<boardPattern[0].length ; j++) {
-			if(boardPattern[i][j]>=0)
-				System.out.print(" ");
-			System.out.print(boardPattern[i][j]);
-		}
-		System.out.println();
+	private void higlightPoint(Field f) {
+		
+		if (gameBoard[f.getY()][f.getX()]==0 && !(myFields.contains(f))){
+			if(!(possiblemoves.contains(f)))
+			possiblemoves.add(f);
+			}
 	}
-	System.out.println();
-	System.out.println();
-	for(int i=0 ; i<gameBoard.length ; i++) {
-		for(int j=0 ; j<gameBoard[0].length ; j++) {
-			if(gameBoard[i][j]>=0)
-				System.out.print(" ");
-			System.out.print(gameBoard[i][j]);
-		}
-		System.out.println();
-	}
-}
 }
