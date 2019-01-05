@@ -24,7 +24,7 @@ public class Game extends Thread {
 	private ArrayList<Player> players;
 	private ArrayList<Bot> bots;
 	private int playersNo, botsNo;    
-	private final int [][]boardPattern={
+	private final int [][]boardPattern= {
 			{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 
 			{-1,-1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1},
@@ -66,7 +66,7 @@ public class Game extends Thread {
 	private int[][] gameBoard =new int[boardPattern.length][boardPattern[0].length];
 	
 	
-	Game(ServerSocket serverSocket, Player host, int playersNo, int botsNo, Server server) {
+	public Game(ServerSocket serverSocket, Player host, int playersNo, int botsNo, Server server) {
 		this.serverSocket = serverSocket;
 		players = new ArrayList<Player>();
 		bots = new ArrayList<Bot>();
@@ -81,15 +81,6 @@ public class Game extends Thread {
 			gameBoard[i] = (int[])boardPattern[i].clone();
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	public void run() {
@@ -130,8 +121,8 @@ public class Game extends Thread {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if(move.equals("MOVE")) {
-				Communicator com = Communicator.fromString(move);
+			Communicator com = Communicator.fromString(move);
+			if(com.getMessage()	.equals("MOVE")) {
 				move(com.getArg(0), com.getArg(1), com.getArg(2), com.getArg(3));
 			}
 				
@@ -155,11 +146,34 @@ public class Game extends Thread {
 				break; 
 			}
 		}
+		turnOfBots();
 		close();
 		server.turnOff();
 	}
 	
 	
+	private void turnOfBots() {
+		for(Bot b : bots) {
+			b.turnOff();
+		}
+	}
+	
+	public ArrayList<Player> getPlayers() {
+		return players;
+	}
+
+	public ArrayList<Bot> getBots() {
+		return bots;
+	}
+
+	public int getPlayersNo() {
+		return playersNo;
+	}
+
+	public int getBotsNo() {
+		return botsNo;
+	}
+
 	private void createBots() {
 		for(int i=1 ; i< botsNo+1 ; i++) {
 			try {
@@ -244,30 +258,6 @@ public class Game extends Thread {
 	}
 	
 	
-
-	private void printBoards() {
-		for(int i=0 ; i<boardPattern.length ; i++) {
-			for(int j=0 ; j<boardPattern[0].length ; j++) {
-				if(boardPattern[i][j]>=0)
-					System.out.print(" ");
-				System.out.print(boardPattern[i][j]);
-			}
-			System.out.println();
-		}
-		System.out.println();
-		System.out.println();
-		for(int i=0 ; i<gameBoard.length ; i++) {
-			for(int j=0 ; j<gameBoard[0].length ; j++) {
-				if(gameBoard[i][j]>=0)
-					System.out.print(" ");
-				System.out.print(gameBoard[i][j]);
-			}
-			System.out.println();
-		}
-	}
-	
-	
-
 	private void close() {
 		for(Player x : players) {
 			x.close();
